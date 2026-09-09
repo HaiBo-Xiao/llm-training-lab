@@ -1,0 +1,1 @@
+uv run --locked python scripts/check_training.py

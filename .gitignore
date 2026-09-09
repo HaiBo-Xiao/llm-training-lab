@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+
+# Environment
+.env
+.env.*
+
+# Model / training artifacts
+checkpoints/
+outputs/
+wandb/
+runs/
+
+# Large model files
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.bin
+
+# Dataset cache
+.cache/
+data/cache/
+
+# OS
+.DS_Store
+Thumbs.db
