@@ -14,6 +14,7 @@ venv/
 
 # Model / training artifacts
 checkpoints/
+weights/
 outputs/
 wandb/
 runs/
@@ -28,6 +29,8 @@ runs/
 # Dataset cache
 .cache/
 data/cache/
+data/raw/
+data/processed/
 
 # OS
 .DS_Store

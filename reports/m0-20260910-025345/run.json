@@ -1,0 +1,50 @@
+{
+  "run_id": "m0-20260910-025345",
+  "stage": "M0",
+  "acceptance": "A0",
+  "command": "uv run --locked python scripts/check_training.py",
+  "code_snapshot": "check_training.py",
+  "code_sha256": "bb2cc40b20b6325e5f669ebee13cdcbee74286079c7a2693eb3b735d62d8ae8e",
+  "lockfile": "uv.lock",
+  "lockfile_sha256": "1467968414695d8c37949b206bed2e847ed6b58afb3e42aa5184da25e8685dc4",
+  "config": {
+    "device": "cuda",
+    "initial_parameter": 0.0,
+    "target": 3.0,
+    "loss": "sum((w - 3)^2)",
+    "dtype": "float32",
+    "optimizer": "SGD",
+    "learning_rate": 0.1,
+    "momentum": 0.9,
+    "weight_decay": 0,
+    "dampening": 0,
+    "nesterov": false,
+    "continuous_steps": 2,
+    "resumed_steps": 1,
+    "seed": null,
+    "seed_reason": "No random initialization, sampling, or stochastic operations in this check",
+    "checkpoint_medium": "io.BytesIO",
+    "stop_condition": "Fixed steps; fail on any assertion"
+  },
+  "environment": {
+    "python": "3.12.3",
+    "uv": "0.12.11",
+    "torch": "2.11.0+cu128",
+    "numpy": "2.5.3",
+    "gpu": "NVIDIA GeForce RTX 4070 SUPER"
+  },
+  "results": {
+    "first_loss": 9.0,
+    "first_updated_parameter": 0.6,
+    "continuous_second_parameter": 1.62,
+    "resumed_second_parameter": 1.62,
+    "original_exit_code": 0,
+    "rebuild_exit_code": 0,
+    "rebuild_output_matches": true,
+    "lockfile_unchanged": true,
+    "disk_checkpoint_tested": false,
+    "elapsed_seconds": null,
+    "peak_gpu_memory_bytes": null
+  },
+  "evidence": ["environment.txt", "host_resources.json", "output.txt", "exit_code.txt", "rebuild.sh", "rebuild_log.txt", "rebuild_output.txt", "rebuild_exit_code.txt"]
+}

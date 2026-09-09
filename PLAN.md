@@ -22,13 +22,14 @@
 
 | 项目 | 已知条件或暂定方案 |
 |---|---|
-| 主要训练设备 | Windows 11 + RTX 4070 SUPER；按 12GB 显存规划，实际可用量待测 |
+| 主要训练设备 | Windows 11 + RTX 4070 SUPER；已核验 12282 MiB 显存，原环境采集时占用 2075 MiB |
 | 辅助设备 | 16GB M4 MacBook Pro，用于编码、阅读、数据分析和查看实验 |
-| 训练系统 | 优先 WSL2 + Linux + PyTorch/CUDA |
-| 未知资源 | Windows 主机内存、空闲磁盘、GPU 可用时间、现有软件环境 |
+| 训练系统 | 已验证 WSL2 + Ubuntu 24.04.3；Python 3.12.3、PyTorch 2.11.0+cu128 |
+| 已核验资源 | Windows 可见内存约 31.8 GiB，WSL 可见约 15 GiB；虚拟磁盘所在 C 盘实际空闲约 294 GiB |
+| 未知资源 | GPU 可用时段；后续各阶段完整训练容量和吞吐待实测 |
 | 学习预算 | 每周投入时间与现有数学/PyTorch 基础尚未登记，不承诺固定周数 |
 
-M0 先登记未知条件。当前目录所在环境是否连接目标 GPU 也必须确认，不能将任意机器上的检查当作 4070 SUPER 的容量证明。
+M0 已确认本项目所在 WSL 环境连接目标 GPU，独立虚拟环境重建检查通过。核验结果和范围见 [ENVIRONMENT.md](ENVIRONMENT.md)；最小检查不代表 SFT/RL 配置的容量证明。
 
 不规划 M4 与 NVIDIA GPU 的异构分布式训练。WSL 使用 Windows 侧 NVIDIA 驱动，不在 WSL 内安装 Linux 显示驱动；是否需要额外 CUDA Toolkit 取决于后续是否编译扩展。[S1]
 

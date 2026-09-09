@@ -1,0 +1,21 @@
+{
+  "recorded_date": "2026-09-10",
+  "source": "Read-only Windows PowerShell query from WSL, Get-CimInstance and WSL distribution registry",
+  "windows_memory_bytes": 34182291456,
+  "windows_disks": [
+    {
+      "device": "C:",
+      "size_bytes": 1998309027840,
+      "free_bytes": 315675807744
+    }
+  ],
+  "wsl_distribution": "Ubuntu",
+  "wsl_base_path": "C:\\Users\\hyper\\AppData\\Local\\wsl\\{2d423b54-5ccc-4b88-8a1b-87a2327692c3}",
+  "wsl_observation_command": "free -h; df -h . /mnt/c",
+  "wsl_memory_total_display": "15Gi",
+  "wsl_memory_available_display": "14Gi",
+  "wsl_filesystem_available_display": "934G",
+  "windows_c_available_display": "294G",
+  "gpu_available_hours": null,
+  "weekly_study_hours": null
+}
