@@ -1,6 +1,6 @@
 # 当前任务与进度
 
-更新时间：2026-09-10。
+更新时间：2026-09-11。
 
 执行计划见 [PLAN.md](PLAN.md)，验收依据见 [ACCEPTANCE.md](ACCEPTANCE.md)。本文件只登记已发生的工作，不用计划中的预期结果代替实际结果。
 
@@ -13,15 +13,20 @@
 
 ## 当前唯一优先任务
 
-M1-1 后半段：建立训练/验证划分，并把长文本切成定长训练样本。前半段（字符编码与 next-token 输入/目标位移）已完成。
+M1-2 入门：完成 [scripts/inspect_forward.py](scripts/inspect_forward.py) 的四个 TODO，理解 ID 列表 → ID 张量 → embedding 向量 → logits → 预测 ID 的形状变化。骨架已准备，学习者待填写并运行；本轮使用 CPU 和固定小数组。
 
 ## M1 进行中记录
 
-- [x] M1-1 前半段：字符级编码与 next-token 输入/目标位移。证据见 [scripts/inspect_tokens.py](scripts/inspect_tokens.py)，提交 `dbc7cf1`；运行 `uv run --locked python scripts/inspect_tokens.py` 退出码为 0，脚本内 assert 全部通过。
-- [ ] M1-1 后半段：训练/验证划分与定长样本切分；训练语料上练习一次 BPE 按 [PLAN.md](PLAN.md) 为可选。
-- [ ] M1-2 及之后：小型 decoder-only 模型与训练循环。尚未开始，本阶段至今未运行任何模型训练。
+| 子任务 | 状态 | 证据与范围 |
+|---|---|---|
+| M1-1 前半段：字符编码与 next-token 位移 | 已通过练习自检 | [inspect_tokens.py](scripts/inspect_tokens.py)，实现见提交 `dbc7cf1`；`uv run --locked python scripts/inspect_tokens.py` 退出码为 0 |
+| M1-1 后半段：训练/验证划分、定长样本和批次 | 已通过练习自检 | [split_dataset.py](scripts/split_dataset.py)，实现见提交 `0ce7964`；2026-09-11 会话复核时，`uv run --locked python scripts/split_dataset.py` 退出码为 0；训练集可取 20 条完整样本，当前批大小为 4 |
+| M1-2 入门：batch 张量、embedding 与 logits | 进行中 | [inspect_forward.py](scripts/inspect_forward.py) 骨架与自检已准备，四个函数留待学习者实现；完成后的前向结果未验证 |
+| M1-2 模型其余组件与训练循环、M1-3 及之后 | 未开始 | 尚未实现完整 decoder-only 模型，M1 至今未运行模型训练 |
 
-边界：`scripts/inspect_tokens.py` 为纯 Python，未 import PyTorch，未构造张量、未计算 loss、未做反向传播，也未实现 causal mask。它只验证了编码往返与位移构造，可作为 A1「用固定序列检查目标位移」一项的部分证据，不覆盖 padding mask 与有效 token 数。
+已完成的两个练习为纯 Python，只验证编码、划分、样本与批次的数据构造，可作为 A1 目标位移检查的部分证据。验证集只有两条完整样本，按当前批大小 4 无法取完整批；短批处理尚未实现。训练语料上的 BPE 按 [PLAN.md](PLAN.md) 为可选，当前未实现。
+
+新练习开始使用 PyTorch，但仅以固定权重观察前向计算，不计算 loss、梯度或参数更新；attention、causal mask、padding mask 与有效 token 数等仍待后续练习。骨架准备不代表学习者已经完成该项，也不代表 A1 通过。
 
 ## M0 完成记录
 
@@ -41,7 +46,7 @@ M1-1 后半段：建立训练/验证划分，并把长文本切成定长训练�
 | 阶段 | 内容 | 状态 | 验收 | 证据路径 / 结论 |
 |---|---|---|---|---|
 | M0 | 环境与记录 | 已通过 | A0 已通过 | [报告](reports/m0-20260910-025345/REPORT.md)；原运行及独立环境重建通过 |
-| M1 | 从零训练基础 | 进行中 | A1 待验收 | M1-1 前半段完成，见 [scripts/inspect_tokens.py](scripts/inspect_tokens.py)（提交 `dbc7cf1`）；未运行模型训练 |
+| M1 | 从零训练基础 | 进行中 | A1 待验收 | M1-1 两个数据练习已通过自检；当前为 [M1-2 前向练习](scripts/inspect_forward.py)，待填写和运行；未运行模型训练 |
 | M2 | 评测与短解答 SFT | 未开始 | A2 待验收 | — |
 | M3 | Countdown 与 GRPO | 未开始 | A3 待验收 | — |
 | M4 | GSM8K 三组闭环 | 未开始 | A4 待验收 | — |
