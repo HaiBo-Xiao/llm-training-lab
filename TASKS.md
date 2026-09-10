@@ -13,7 +13,15 @@
 
 ## 当前唯一优先任务
 
-M1-1：用一小段文本理解字符到 token ID 的编码，以及 next-token prediction 的输入/目标位移；随后准备训练/验证划分。
+M1-1 后半段：建立训练/验证划分，并把长文本切成定长训练样本。前半段（字符编码与 next-token 输入/目标位移）已完成。
+
+## M1 进行中记录
+
+- [x] M1-1 前半段：字符级编码与 next-token 输入/目标位移。证据见 [scripts/inspect_tokens.py](scripts/inspect_tokens.py)，提交 `dbc7cf1`；运行 `uv run --locked python scripts/inspect_tokens.py` 退出码为 0，脚本内 assert 全部通过。
+- [ ] M1-1 后半段：训练/验证划分与定长样本切分；训练语料上练习一次 BPE 按 [PLAN.md](PLAN.md) 为可选。
+- [ ] M1-2 及之后：小型 decoder-only 模型与训练循环。尚未开始，本阶段至今未运行任何模型训练。
+
+边界：`scripts/inspect_tokens.py` 为纯 Python，未 import PyTorch，未构造张量、未计算 loss、未做反向传播，也未实现 causal mask。它只验证了编码往返与位移构造，可作为 A1「用固定序列检查目标位移」一项的部分证据，不覆盖 padding mask 与有效 token 数。
 
 ## M0 完成记录
 
@@ -33,7 +41,7 @@ M1-1：用一小段文本理解字符到 token ID 的编码，以及 next-token 
 | 阶段 | 内容 | 状态 | 验收 | 证据路径 / 结论 |
 |---|---|---|---|---|
 | M0 | 环境与记录 | 已通过 | A0 已通过 | [报告](reports/m0-20260910-025345/REPORT.md)；原运行及独立环境重建通过 |
-| M1 | 从零训练基础 | 未开始 | A1 待验收 | — |
+| M1 | 从零训练基础 | 进行中 | A1 待验收 | M1-1 前半段完成，见 [scripts/inspect_tokens.py](scripts/inspect_tokens.py)（提交 `dbc7cf1`）；未运行模型训练 |
 | M2 | 评测与短解答 SFT | 未开始 | A2 待验收 | — |
 | M3 | Countdown 与 GRPO | 未开始 | A3 待验收 | — |
 | M4 | GSM8K 三组闭环 | 未开始 | A4 待验收 | — |
