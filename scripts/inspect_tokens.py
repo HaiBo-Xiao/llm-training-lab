@@ -20,7 +20,7 @@ text = "小猫吃鱼。"
 # 目标：包含 text 中所有不同的字符，每个字符只出现一次。
 # 提示：set(text) 可以去重；sorted(...) 可以把字符按固定顺序排列。
 # 排序是为了让编号顺序稳定，不代表字符的重要性。
-vocab = []
+vocab = sorted(set(text))
 
 
 # TODO 2：填写字符到 ID 的字典 stoi，这也是数据，不是函数。
@@ -29,14 +29,14 @@ vocab = []
 # 举个与本例无关的例子：若词表为 ["a", "b"]，结果为 {"a": 0, "b": 1}。
 # 提示：enumerate(vocab) 每次给你一对“编号、字符”。
 # 可以用普通 for 循环逐项填入字典，不要求使用字典推导式。
-stoi = {}
+stoi = {v: i for i,v in enumerate(vocab)}
 
 
 # TODO 3：填写反向字典 itos，即 integer-to-string。
 # 它回答“给定一个 ID，对应哪个字符？”
 # 上面的英文字母例子中，结果为 {0: "a", 1: "b"}。
 # 它必须与 stoi 一一对应。
-itos = {}
+itos = {i:v for i ,v in enumerate(vocab)}
 
 
 def encode(s: str) -> list[int]:
@@ -54,7 +54,12 @@ def encode(s: str) -> list[int]:
     本轮假设输入字符都在词表中，不需要处理未知字符。
     """
     # 将下面的占位报错替换成你的实现。
-    raise NotImplementedError("请先完成 TODO 4：encode")
+
+    ans=[]
+    for ch in s:
+
+        ans.append(stoi[ch])
+    return ans
 
 
 def decode(ids: list[int]) -> str:
@@ -71,7 +76,12 @@ def decode(ids: list[int]) -> str:
     同样，不要把答案写死为全局变量 text。
     """
     # 将下面的占位报错替换成你的实现。
-    raise NotImplementedError("请先完成 TODO 5：decode")
+    ch_list = []
+    for i in ids:
+        # if i in itos:
+        ch_list.append(itos[i])
+    return "".join(ch_list)
+
 
 
 # 以下先检查前三份数据。assert 后的条件不成立时，程序会在这里停止。
@@ -103,8 +113,8 @@ print("解码后的文本：", decoded_text)
 # y 是目标：去掉完整序列的第一个 ID。
 # 提示：使用列表切片；不要重新编号，也不要手写具体 ID。
 # 本例解码后应分别是：x -> "小猫吃鱼"，y -> "猫吃鱼。"。
-x = []
-y = []
+x = ids[:-1]
+y = ids[1:]
 
 assert len(x) == len(y) == len(ids) - 1, "请完成 TODO 6：输入和目标都应比原序列短一项"
 assert decode(x) == text[:-1], "输入应去掉原文最后一个字符"
