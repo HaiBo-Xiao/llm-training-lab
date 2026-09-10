@@ -10,7 +10,10 @@
 | [ACCEPTANCE.md](ACCEPTANCE.md) | 各阶段验收标准，以及需要提交的证据 |
 | [TASKS.md](TASKS.md) | 当前进度、下一步和验收记录 |
 | [ENVIRONMENT.md](ENVIRONMENT.md) | 已验证的环境、重建命令和存储约定 |
+| [STYLE.md](STYLE.md) | 练习骨架、题面、注释、自检与文档的统一风格约定 |
 | [实验报告模板](reports/TEMPLATE.md) | 每轮实验的问题、配置、结果与结论 |
+
+所有协作者和 AI 助手（Claude Code、Codex 或其它）在写代码或文档前先读 [STYLE.md](STYLE.md)，它是风格的唯一出处，第 0 节是核心约定速览。
 
 当前 M0 / A0 已通过：完成最小训练检查、实验记录、独立虚拟环境重建和主机资源核验，证据见 [M0 报告](reports/m0-20260910-025345/REPORT.md)。下一步进入 M1，从文本编码和 next-token prediction 学起。训练学习由学习者执行，纯环境校验由助手代办；每完成一项，将证据路径记入 TASKS.md，再更新状态。
 
