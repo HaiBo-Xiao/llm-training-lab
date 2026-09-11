@@ -114,7 +114,7 @@ def to_tensor(rows: list[list[int]]) -> torch.Tensor:
     提示：
         - torch.tensor 可以从嵌套列表创建张量；dtype 参数控制元素类型。
     """
-    pass
+    return torch.tensor(rows, dtype=torch.long)
 
 
 # 以下 TODO 1 自检已经写好，不需要修改。
@@ -177,7 +177,7 @@ def lookup_embeddings(ids: torch.Tensor, table: torch.Tensor) -> torch.Tensor:
     提示：
         - PyTorch 支持用整数张量作为下标，一次选择多行。
     """
-    pass
+    return table[ids]
 
 
 # 以下 TODO 2 自检已经写好，不需要修改。
@@ -252,7 +252,7 @@ def project_logits(hidden: torch.Tensor, weight: torch.Tensor) -> torch.Tensor:
         - torch.matmul 或 @ 运算符支持带批次维的矩阵乘法。
         - 右侧二维权重可以由左侧的所有样本共用，不需要手动复制多份。
     """
-    pass
+    return hidden@weight
 
 
 # 以下 TODO 3 自检已经写好，不需要修改。
@@ -319,7 +319,9 @@ def predict_ids(scores: torch.Tensor) -> torch.Tensor:
     提示：
         - argmax 返回最大值的下标；dim 参数指定在哪一维进行比较。
     """
-    pass
+
+
+    return scores.argmax(dim=-1)
 
 
 # 以下 TODO 4 自检已经写好，不需要修改。
