@@ -15,7 +15,7 @@
 
 所有协作者和 AI 助手（Claude Code、Codex 或其它）在写代码或文档前先读 [STYLE.md](STYLE.md)，它是风格的唯一出处，第 0 节是核心约定速览。
 
-当前 M0 / A0 已通过，证据见 [M0 报告](reports/m0-20260910-025345/REPORT.md)。M1-1 的字符编码与批次构造练习已通过自检，当前进入 [M1-2 入门：batch 张量、embedding 与 logits](scripts/inspect_forward.py)，骨架已准备，待学习者填写和运行。M1 尚未运行模型训练，A1 待验收。训练学习由学习者执行，纯环境校验由助手代办；每完成一项，将证据路径记入 TASKS.md，再更新状态。
+当前 M0 / A0 已通过，证据见 [M0 报告](reports/m0-20260910-025345/REPORT.md)。M1-1 的字符编码与批次构造练习，以及 [M1-2 入门：batch 张量、embedding 与 logits](scripts/inspect_forward.py) 已通过自检，前向练习证据见提交 `7131d2`。下一步进入因果自注意力，再组合 decoder-only 模型并接入最小训练步；M1 尚未运行模型训练，A1 待验收。训练学习由学习者执行，纯环境校验由助手代办；每完成一项，将证据路径记入 TASKS.md，再更新状态。
 
 ## 主线
 
