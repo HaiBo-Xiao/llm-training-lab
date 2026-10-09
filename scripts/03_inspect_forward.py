@@ -4,7 +4,7 @@
 给定数据、自检、打印和边界说明已经写好，不需要修改。
 
 运行方式（在项目根目录）：
-    uv run --locked python scripts/inspect_forward.py
+    uv run --locked python scripts/03_inspect_forward.py
 
 当前文件是练习骨架。函数未填写时返回 None，自检会在对应 TODO 给出中文提示。
 本轮使用已有的 PyTorch，在 CPU 上运行，不需要下载数据或模型。

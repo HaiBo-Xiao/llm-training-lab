@@ -4,13 +4,13 @@
 请按 TODO 1～6 的顺序填写。检查区、打印区和已标注“已经写好”的代码不需要修改。
 
 运行方式（在项目根目录）：
-    uv run --locked python scripts/split_dataset.py
+    uv run --locked python scripts/02_split_dataset.py
 
 从未填写的骨架开始练习时，数据槽位会报 NameError，函数槽位会返回 None，
 并由后面的 assert 给出中文提示。这两种失败都是预期行为。
 
 本轮使用普通 Python，不需要 PyTorch，不构造张量，也不会执行模型训练。
-与上一个练习 scripts/inspect_tokens.py 的关键区别：词表只用训练集构建，
+与上一个练习 scripts/01_inspect_tokens.py 的关键区别：词表只用训练集构建，
 因此验证集里会出现词表外的字符，本轮必须处理它们，不能假设输入都在词表内。
 
 本轮产物是两份按行排列的列表：输入 xb 和目标 yb，供后续模型预测下一个字符。

@@ -4,7 +4,7 @@
 请按 TODO 1～6 的顺序填写。打印和检查部分已经写好。
 
 运行方式（在项目根目录）：
-    uv run --locked python scripts/inspect_tokens.py
+    uv run --locked python scripts/01_inspect_tokens.py
 
 当前文件是练习骨架，未填写时会主动报错提示。这是预期行为。
 本轮使用普通 Python，不需要 PyTorch，也不会执行模型训练。

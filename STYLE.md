@@ -13,7 +13,7 @@
 5. 不改动学习者已经填写的答案区，先说明问题再等确认。
 6. 自检 assert、打印区、边界声明由助手写好，并注明“已经写好，不需要修改”。
 7. 环境校验类脚本由助手写成完整实现，训练与学习类练习由学习者执行。
-8. 运行命令统一为项目根目录下的 `uv run --locked python scripts/<name>.py`。
+8. 练习脚本按学习顺序使用两位数字前缀，运行命令统一为项目根目录下的 `uv run --locked python scripts/<nn>_<name>.py`。
 9. 结论要有证据路径，不用计划中的预期结果代替实际结果，未验证的写“未验证”。
 
 以下逐项展开。
@@ -23,17 +23,19 @@
 - 助手写骨架、题面、自检和文档，不替学习者写实现。
 - 学习者填写 TODO、运行脚本、记录证据。
 - 助手不改动学习者已经填写的答案区。发现错误时说明问题和定位，等学习者确认后再动手；学习者明确要求 review 或修复时不受此限。
-- 纯环境校验脚本（例如 `scripts/check_training.py`）由助手写成完整实现，不留 TODO；训练与学习类练习由学习者执行。
+- 纯环境校验脚本（例如 `scripts/00_check_training.py`）由助手写成完整实现，不留 TODO；训练与学习类练习由学习者执行。
 
 ## 2. 练习脚本的结构
 
-一个练习一个文件，放在 `scripts/`，文件名用 snake_case 动词短语，例如 `inspect_tokens.py`。运行命令统一为项目根目录下的 `uv run --locked python scripts/<name>.py`，并写进模块 docstring。文件自上而下线性阅读，顺序固定：
+一个练习一个文件，放在 `scripts/`，文件名用两位数字前缀加 snake_case 动词短语，例如 `01_inspect_tokens.py`。运行命令统一为项目根目录下的 `uv run --locked python scripts/<nn>_<name>.py`，并写进模块 docstring。文件自上而下线性阅读，顺序固定：
 
 1. 模块 docstring：阶段编号与练习名、要完成的项数、填写顺序、运行命令、未完成时的预期行为、本轮的依赖范围；简要说明最终产物及数据从输入到产物的处理顺序。
 2. 已给定的数据或常量，附注释说明本轮的约定。
 3. 交替出现的「题面 + 槽位 + 自检」，按 TODO 顺序排列。
 4. 打印区：展示结果，帮助学习者确认自己写对了。
 5. 边界声明：这次验证了什么、没有验证什么。
+
+`00` 用于环境校验，练习从 `01` 起按学习顺序连续编号；后续脚本沿用下一编号，不按阶段重新从 `01` 开始。新增或重命名脚本时，同步更新 README 的复习顺序、文档链接和运行命令。`reports/` 中的历史代码快照、原始日志和重建入口保留记录时的名称。
 
 模块 docstring 的样式：
 
@@ -44,7 +46,7 @@
 请按 TODO 1～6 的顺序填写。打印和检查部分已经写好。
 
 运行方式（在项目根目录）：
-    uv run --locked python scripts/inspect_tokens.py
+    uv run --locked python scripts/01_inspect_tokens.py
 
 当前文件是练习骨架，未填写时会主动报错提示。这是预期行为。
 本轮使用普通 Python，不需要 PyTorch，也不会执行模型训练。
@@ -240,7 +242,7 @@ def decode(ids: list[int]) -> str:
 检查和打印部分已经写好。
 
 运行方式（在项目根目录）：
-    uv run --locked python scripts/example_exercise.py
+    uv run --locked python scripts/01_example_exercise.py
 
 当前文件是练习骨架，未填写时会主动报错提示。这是预期行为。
 本轮使用普通 Python，不需要 PyTorch，也不会执行模型训练。

@@ -1,6 +1,6 @@
 # 当前任务与进度
 
-更新时间：2026-09-11。
+更新时间：2026-10-09。
 
 执行计划见 [PLAN.md](PLAN.md)，验收依据见 [ACCEPTANCE.md](ACCEPTANCE.md)。本文件只登记已发生的工作，不用计划中的预期结果代替实际结果。
 
@@ -13,21 +13,31 @@
 
 ## 当前唯一优先任务
 
-M1-2 当前任务：完成 [scripts/inspect_attention.py](scripts/inspect_attention.py) 的四个 TODO，理解 Q、K、V，计算注意力分数，屏蔽未来位置，并按注意力权重汇总向量。计划使用 CPU 和固定小数组，验收包括形状、权重归一化与未来信息不泄漏。之后再组合 decoder-only 模型、接入 loss 与最小训练步。
+M1-2 当前任务：完成 [scripts/05_inspect_loss.py](scripts/05_inspect_loss.py) 的四个 TODO，理解 logits 与已对齐目标的交叉熵、`ignore_index`、有效 token mask 和正确的平均损失。之后再组合 decoder-only 模型、接入 backward 与最小训练步。
 
 ## M1 进行中记录
 
 | 子任务 | 状态 | 证据与范围 |
 |---|---|---|
-| M1-1 前半段：字符编码与 next-token 位移 | 已通过练习自检 | [inspect_tokens.py](scripts/inspect_tokens.py)，实现见提交 `dbc7cf1`；`uv run --locked python scripts/inspect_tokens.py` 退出码为 0 |
-| M1-1 后半段：训练/验证划分、定长样本和批次 | 已通过练习自检 | [split_dataset.py](scripts/split_dataset.py)，实现见提交 `0ce7964`；2026-09-11 会话复核时，`uv run --locked python scripts/split_dataset.py` 退出码为 0；训练集可取 20 条完整样本，当前批大小为 4 |
-| M1-2 入门：batch 张量、embedding 与 logits | 已通过练习自检 | [inspect_forward.py](scripts/inspect_forward.py)，实现见提交 `7131d2`；`uv run --locked python scripts/inspect_forward.py` 退出码为 0，四个 TODO 的形状与数值自检全部通过 |
-| M1-2 因果自注意力 | 进行中 | [inspect_attention.py](scripts/inspect_attention.py) 骨架已准备，四个函数留待学习者实现；完成后的注意力结果未验证 |
+| M1-1 前半段：字符编码与 next-token 位移 | 已通过练习自检 | [01_inspect_tokens.py](scripts/01_inspect_tokens.py)，实现见提交 `dbc7cf1`；`uv run --locked python scripts/01_inspect_tokens.py` 退出码为 0 |
+| M1-1 后半段：训练/验证划分、定长样本和批次 | 已通过练习自检 | [02_split_dataset.py](scripts/02_split_dataset.py)，实现见提交 `0ce7964`；2026-09-11 会话复核时脚本退出码为 0；训练集可取 20 条完整样本，当前批大小为 4 |
+| M1-2 入门：batch 张量、embedding 与 logits | 已通过练习自检 | [03_inspect_forward.py](scripts/03_inspect_forward.py)，实现见提交 `7131d2`；`uv run --locked python scripts/03_inspect_forward.py` 退出码为 0，四个 TODO 的形状与数值自检全部通过 |
+| M1-2 因果自注意力 | 已通过练习自检 | [04_inspect_attention.py](scripts/04_inspect_attention.py)，实现见提交 `ef29806`；本次复核退出码为 0，形状、权重归一化、未来位置为 0，以及改变未来值不影响前两个位置的检查均通过 |
+| M1-2 logits、目标与有效 token 损失 | 进行中 | [05_inspect_loss.py](scripts/05_inspect_loss.py) 骨架已准备，四个函数留待学习者实现；完成后的损失结果未验证 |
 | M1-2 模型其余组件与训练循环、M1-3 及之后 | 未开始 | 尚未实现完整 decoder-only 模型，M1 至今未运行模型训练 |
 
-已完成的两个练习为纯 Python，只验证编码、划分、样本与批次的数据构造，可作为 A1 目标位移检查的部分证据。验证集只有两条完整样本，按当前批大小 4 无法取完整批；短批处理尚未实现。训练语料上的 BPE 按 [PLAN.md](PLAN.md) 为可选，当前未实现。
+2026-10-09 按学习顺序为 `scripts/` 中的脚本添加 `00`～`05` 前缀。本页链接和复习命令使用新文件名；历史提交、归档快照和原始运行记录中的文件名保留原样。
 
-前向练习使用 PyTorch 和固定权重观察计算，但不计算 loss、梯度或参数更新；attention、causal mask、padding mask 与有效 token 数等仍待后续练习。该项自检通过不代表 A1 通过。
+已完成的两个数据练习为纯 Python，只验证编码、划分、样本与批次的数据构造，可作为 A1 目标位移检查的部分证据。验证集只有两条完整样本，按当前批大小 4 无法取完整批；短批处理尚未实现。训练语料上的 BPE 按 [PLAN.md](PLAN.md) 为可选，当前未实现。
+
+前向和注意力练习使用 PyTorch 与固定权重观察计算，但不计算 loss、梯度或参数更新；当前正在补齐有效 token 损失，之后仍需组合完整 decoder-only 模型、训练循环、验证集和恢复对比。上述练习自检通过不代表 A1 通过。
+
+## 最近复核（2026-10-09）
+
+- `01_inspect_tokens.py`、`02_split_dataset.py`、`03_inspect_forward.py`、`04_inspect_attention.py` 均在当前 `.venv` 中退出码为 0。
+- 当前会话运行环境是 macOS CPU；`scripts/00_check_training.py` 因 `torch.cuda.is_available()` 为 False 退出，不能用它改写目标 WSL RTX 4070 SUPER 的 A0 结论。
+- `uv run --locked` 在当前受限环境无法初始化用户目录下的 uv 缓存；复核使用项目已有 `.venv/bin/python`，这不改变项目规定的运行命令。
+- 下一步唯一优先任务：完成 `scripts/05_inspect_loss.py`，并记录脚本退出码和打印出的有效 token 数、平均损失。
 
 ## M0 完成记录
 
@@ -47,7 +57,7 @@ M1-2 当前任务：完成 [scripts/inspect_attention.py](scripts/inspect_attent
 | 阶段 | 内容 | 状态 | 验收 | 证据路径 / 结论 |
 |---|---|---|---|---|
 | M0 | 环境与记录 | 已通过 | A0 已通过 | [报告](reports/m0-20260910-025345/REPORT.md)；原运行及独立环境重建通过 |
-| M1 | 从零训练基础 | 进行中 | A1 待验收 | M1-1 两个数据练习与 [M1-2 前向练习](scripts/inspect_forward.py) 已通过自检；下一项为因果自注意力；未运行模型训练 |
+| M1 | 从零训练基础 | 进行中 | A1 待验收 | M1-1 两个数据练习、[前向练习](scripts/03_inspect_forward.py) 与 [因果自注意力](scripts/04_inspect_attention.py) 已通过自检；当前为有效 token 损失；未运行模型训练 |
 | M2 | 评测与短解答 SFT | 未开始 | A2 待验收 | — |
 | M3 | Countdown 与 GRPO | 未开始 | A3 待验收 | — |
 | M4 | GSM8K 三组闭环 | 未开始 | A4 待验收 | — |

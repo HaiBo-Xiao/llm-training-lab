@@ -5,7 +5,7 @@
 检查区、打印区和已标注“已经写好”的代码不需要修改。
 
 运行方式（在项目根目录）：
-    uv run --locked python scripts/inspect_attention.py
+    uv run --locked python scripts/04_inspect_attention.py
 
 当前文件是练习骨架。函数未填写时返回 None，自检会在对应 TODO 给出中文提示。
 本轮使用 CPU 上的固定小张量，不构造完整模型，不计算 loss，不反向传播，也不更新参数。

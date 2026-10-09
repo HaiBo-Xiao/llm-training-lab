@@ -26,7 +26,7 @@
 
 ```bash
 uv sync --locked
-uv run --locked python scripts/check_training.py
+uv run --locked python scripts/00_check_training.py
 ```
 
 `uv sync --locked` 创建或同步项目 `.venv`；依赖配置与锁文件不匹配时会报错。软件包可以来自 uv 缓存或锁文件指定的下载源。完整重建证据使用原实验快照，在独立目录重新创建 `.venv`：
