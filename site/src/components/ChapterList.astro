@@ -1,0 +1,4 @@
+---
+import { chapters } from '../data/chapters';
+---
+<div class="chapter-list">{chapters.map(chapter => <a href={`/learn/${chapter.slug}/`} class:list={['chapter-row', { 'featured-chapter': chapter.slug === 'attention', 'pending-chapter': !chapter.complete }]}><span class="chapter-number mono">{chapter.number}</span><div class="chapter-row-copy"><h3>{chapter.title}{chapter.slug === 'attention' && <span class="small-label">精选交互</span>}</h3><p>{chapter.description}</p></div><div class="chapter-row-tags">{chapter.tags.map(tag => <span>{tag}</span>)}</div><span class="row-status">{chapter.complete ? '已完成' : '下一步'}</span><span class="row-arrow" aria-hidden="true">↗</span></a>)}</div>

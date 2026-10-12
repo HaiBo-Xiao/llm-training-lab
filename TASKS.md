@@ -1,6 +1,6 @@
 # 当前任务与进度
 
-更新时间：2026-10-09。
+更新时间：2026-10-12。
 
 执行计划见 [PLAN.md](PLAN.md)，验收依据见 [ACCEPTANCE.md](ACCEPTANCE.md)。本文件只登记已发生的工作，不用计划中的预期结果代替实际结果。
 
@@ -72,6 +72,21 @@ M1-2 当前任务：完成 [scripts/05_inspect_loss.py](scripts/05_inspect_loss.
 | X3 | 标量 Reward Model | 未开始（可选） | 理解成对偏好之后 | — |
 | X4 | DPO | 未开始（推荐扩展） | M2 后，不阻塞 RLVR | — |
 | X5 | OpenR1 / 更复杂数学 | 未开始（可选） | M4 后，容量与评测稳定时 | — |
+
+## 学习展示网站（不计入训练验收）
+
+2026-10-12 根据现有内容新增 `site/` 本地网站；训练阶段状态与练习答案保持原有记录。
+
+| 内容 | 状态 | 证据与范围 |
+|---|---|---|
+| 项目概览、学习目录、四项已完成练习的阅读与交互 | 已实现 | [页面源码](site/src/pages/)、[交互组件](site/src/components/)；loss 章节保留为待完成任务 |
+| 按实现小节播放 Manim 动画 | 已实现 | [19 个分镜](visuals/manim/catalog.json)、[渲染入口](visuals/manim/render.py)、[视频与字幕](site/public/animations/)、[网页时间轴](site/src/data/animations.json)；覆盖 01～04 练习，720p 中文字幕，无配音；未生成 loss 答案动画 |
+| M0 结果、项目路线、源文件查看与下载 | 已实现 | 构建时读取仓库既有源码和归档材料；未启动训练 |
+| 网站注意力数值检查 | 通过 | `cd site` 后执行 `npm test`，3 项通过；覆盖固定数值、因果不变性与无遮罩对照 |
+| 类型检查与静态构建 | 通过 | `npm run build`；类型检查无错误、无警告，生成 25 个页面及原始材料下载文件 |
+| 浏览器交互与布局 | 通过 | `npm run test:browser`，5 项通过；覆盖搜索、下载、四章交互、19 段视频加载、播放、倍速、连播、文字稿跳转、笔记锚点及 390px / 320px 横向溢出检查；使用本地 Chromium |
+
+运行与静态构建方式见 [README.md](README.md) 的“本地学习网站”。浏览器检查对应 [site.spec.ts](site/tests/browser/site.spec.ts)，截图位于本地忽略目录 `site/.playwright/`。
 
 ## 如何更新
 

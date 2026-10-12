@@ -1,0 +1,8 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ChapterList from '../../components/ChapterList.astro';
+---
+<BaseLayout title="学习手册" active="learn"><main id="main" class="container directory-page"><div class="eyebrow">THE NOTEBOOK / M1</div><h1 class="page-title">把原理，放回计算里。</h1><p class="page-intro">沿着数据流向逐章阅读，或直接回到想复习的地方。<br/>当前四项练习已通过自检，下一步是有效 token 的平均损失。</p><a class="resume-link" href="/learn/tokens/" id="resume-reading">从第一章开始 →</a><div class="directory-heading"><h2>训练基础</h2><span class="mono muted">04 / 05 练习已完成</span></div><ChapterList /><div class="reading-note"><span class="note-icon">↳</span><div><h3>先预测结果，再操作验证。</h3><p>每章都保留了具体数值、实现入口和复习问题。浏览器里的演示使用小型教学例子；实验记录单独标明实际运行的结果。</p></div></div></main><script>
+import { chapters } from '../../data/chapters';
+try { const slug = localStorage.getItem('llm-lab-last-chapter'); const chapter = chapters.find(item => item.slug === slug); if (chapter) { const link = document.querySelector<HTMLAnchorElement>('#resume-reading')!; link.href = `/learn/${chapter.slug}/`; link.textContent = `继续阅读：${chapter.title} →`; } } catch { /* 未开启本地存储时从第一章开始。 */ }
+</script></BaseLayout>

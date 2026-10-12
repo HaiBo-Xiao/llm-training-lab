@@ -1,0 +1,66 @@
+---
+import '../styles/global.css';
+import 'katex/dist/katex.min.css';
+import { chapters } from '../data/chapters';
+interface Props { title?: string; description?: string; active?: string; }
+const { title = '让每一次计算，都有迹可循', description = '从字符编码到数学强化学习。一份持续生长的单卡训练笔记，记录原理、实现与实验。', active = '' } = Astro.props;
+const links = [['/', '概览', 'home'], ['/learn/', '学习手册', 'learn'], ['/experiments/', '实验记录', 'experiments'], ['/roadmap/', '项目路线', 'roadmap']];
+---
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#f7f7f2" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title} · LLM Training Lab</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">跳到正文</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="/" aria-label="LLM Training Lab 首页">
+          <img src="/favicon.svg" width="34" height="34" alt="" />
+          <span>LLM <span class="brand-light">Training Lab</span></span>
+        </a>
+        <nav class="desktop-nav" aria-label="主导航">
+          {links.map(([href, label, id]) => <a href={href} class:list={{ active: active === id }} aria-current={active === id ? 'page' : undefined}>{label}</a>)}
+        </nav>
+        <div class="header-actions">
+          <button class="search-trigger" data-open-search aria-label="搜索章节">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg>
+            <span>搜索</span><kbd>⌘ K</kbd>
+          </button>
+          <details class="mobile-nav"><summary>导航</summary><nav aria-label="移动端导航">{links.map(([href, label]) => <a href={href}>{label}</a>)}</nav></details>
+        </div>
+      </div>
+    </header>
+    <slot />
+    <footer class="site-footer"><div class="container footer-inner"><span class="footer-name">LLM Training Lab <span>／ 学习、实现、验证</span></span><a href="/source/tasks/">内容依据项目记录 · 2026.10.09 <span aria-hidden="true">↗</span></a></div></footer>
+    <dialog class="search-dialog" aria-labelledby="search-heading">
+      <div class="search-dialog-head"><h2 id="search-heading">查找一个知识点</h2><button class="icon-button" data-close-search aria-label="关闭搜索">×</button></div>
+      <label class="sr-only" for="chapter-search">章节名称或关键词</label><input id="chapter-search" type="search" placeholder="试试「注意力」「batch」「loss」" autocomplete="off" />
+      <div class="search-results">
+        {chapters.map(chapter => <a href={`/learn/${chapter.slug}/`} data-search={chapter.title + ' ' + chapter.english + ' ' + chapter.tags.join(' ')}><span class="mono">{chapter.number}</span><span>{chapter.title}<small>{chapter.tags.join(' · ')}</small></span><span aria-hidden="true">↗</span></a>)}
+      </div>
+      <p class="search-empty" hidden>没有匹配的章节，可以换一个关键词。</p>
+      <div class="search-hint">按 Esc 关闭 · 选择章节开始阅读</div>
+    </dialog>
+    <script>
+      const dialog = document.querySelector<HTMLDialogElement>('.search-dialog')!;
+      const input = document.querySelector<HTMLInputElement>('#chapter-search')!;
+      function openSearch() { dialog.showModal(); input.focus(); }
+      document.querySelector('[data-open-search]')?.addEventListener('click', openSearch);
+      document.querySelector('[data-close-search]')?.addEventListener('click', () => dialog.close());
+      dialog.addEventListener('click', event => { if (event.target === dialog) dialog.close(); });
+      document.addEventListener('keydown', event => { if ((event.metaKey || event.ctrlKey) && event.key === 'k') { event.preventDefault(); if (dialog.open) dialog.close(); else openSearch(); } });
+      input.addEventListener('input', () => {
+        const query = input.value.trim().toLowerCase();
+        let matches = 0;
+        document.querySelectorAll<HTMLElement>('[data-search]').forEach(item => { const visible = item.dataset.search!.toLowerCase().includes(query); item.hidden = !visible; if (visible) matches++; });
+        document.querySelector<HTMLElement>('.search-empty')!.hidden = matches !== 0;
+      });
+    </script>
+  </body>
+</html>

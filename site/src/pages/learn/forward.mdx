@@ -1,0 +1,89 @@
+---
+layout: ../../layouts/ChapterLayout.astro
+chapter: forward
+title: 从 ID 到候选词分数
+description: 查出一个向量，再给词表中的每个候选字符打分。
+---
+
+import { ForwardLab } from '../../components/DataWalkthrough';
+import ManimLessons from '../../components/ManimLessons.astro';
+
+从 ID 到预测结果，按四个函数逐步观看实际数据的变化。本轮使用固定权重，尚未训练或更新模型参数。
+
+## 按小节看实现
+
+<ManimLessons chapter="forward" />
+
+## 自己动手验证
+
+<details className="lab-disclosure">
+<summary>打开前向计算实验</summary>
+<div>
+
+本章词表为“。、小、猫、鱼”。选择输入字符，对照取出的向量和候选分数。
+
+<ForwardLab client:load />
+
+</div>
+</details>
+
+## 文字与代码对照
+
+<details className="chapter-reading">
+<summary>展开完整笔记、手算与复习题</summary>
+<div>
+
+### Embedding 是一次查表
+
+E 有四行、两列。每个 ID 选择对应的一整行，得到一个二维向量。
+
+| ID | 字符 | E 中的向量 |
+| --- | --- | --- |
+| 0 | 。 | [0, 0] |
+| 1 | 小 | [1, 0] |
+| 2 | 猫 | [0, 1] |
+| 3 | 鱼 | [1, 1] |
+
+“小”的 ID 为 1，因此取出 E 的第 1 行 `[1, 0]`。本步骤尚未加入位置或上下文，同一个 ID 总会查到同一个向量。
+
+### 向量如何变成分数
+
+输出权重 W 有两行、四列，每一列对应一个候选字符。将向量 h 与每一列做点积，得到 logits。
+
+```text
+候选字符：  。   小   猫   鱼
+W = [
+  [        0,   1,   2,  -1],
+  [        0,  -1,   1,   2],
+]
+
+输入“小”：h = [1, 0]
+logits = h @ W = [0, 1, 2, -1]
+最大分数对应 ID 2，也就是“猫”。
+```
+
+logits 是尚未归一化的分数，可以为负，总和也不要求为 1。当前使用 argmax 取最大分数的下标；这些固定权重产生的结果，不表示模型已经通过训练学会了语言。
+
+### 保留批次与位置维度
+
+实际练习的 B = 2、T = 3、D = 2、V = 4。前向计算始终保留前两维，在最后一维上完成查表与投影。
+
+| 数据 | 形状 | 含义 |
+| --- | --- | --- |
+| x | [2, 3] | 两条样本，每条三个 ID |
+| h | [2, 3, 2] | 每个位置取出二维向量 |
+| logits | [2, 3, 4] | 每个位置对四个候选打分 |
+| pred | [2, 3] | 每个位置选出一个预测 ID |
+
+完整实现见 [03_inspect_forward.py](/source/forward/)，实现提交 `7131d2`，形状与数值自检通过。来源见 [任务记录](/source/tasks/)。
+
+### 检查自己的理解
+
+<details><summary>为什么对字符 ID 直接乘 W 不行？</summary><div>ID 是查表下标。需要先用它从 E 取出长度为 D 的向量，再与形状为 [D, V] 的 W 相乘。ID 的数值大小本身不承担这些特征。</div></details>
+
+<details><summary>如果输入“。”，四个 logits 都是 0，会预测什么？</summary><div>本例的 argmax 会返回第一个最大值的位置，也就是 ID 0。这来自固定的零向量与取最大值的规则，不是一次经过学习的判断。</div></details>
+
+<div className="callout"><strong>下一步的连接</strong>目前各位置独立查表和投影。下一章单独理解因果注意力如何汇总上下文；完整模型还需要组合这些组件。</div>
+
+</div>
+</details>

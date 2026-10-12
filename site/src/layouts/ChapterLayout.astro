@@ -1,0 +1,50 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import { chapters } from '../data/chapters';
+interface Props { frontmatter: { chapter: string; title: string; description: string }; headings?: { depth: number; slug: string; text: string }[]; }
+const { frontmatter, headings = [] } = Astro.props;
+const chapter = chapters.find(item => item.slug === frontmatter.chapter)!;
+const currentIndex = chapters.findIndex(item => item.slug === chapter.slug);
+const previous = chapters[currentIndex - 1];
+const next = chapters[currentIndex + 1];
+---
+<BaseLayout title={frontmatter.title} description={frontmatter.description} active="learn">
+  <div class="book-layout container">
+    <aside class="book-sidebar">
+      <a class="sidebar-title" href="/learn/"><span class="book-icon" aria-hidden="true">▤</span> 学习手册</a>
+      <div class="sidebar-label">M1 · 训练基础</div>
+      <nav aria-label="章节导航">{chapters.map(item => <a href={`/learn/${item.slug}/`} class:list={['chapter-nav', { selected: item.slug === chapter.slug }]} aria-current={item.slug === chapter.slug ? 'page' : undefined}><span class="mono">{item.number}</span><span>{item.title}</span><span class:list={['nav-dot', { upcoming: !item.complete }]} aria-label={item.complete ? '自检通过' : '待完成'}></span></a>)}</nav>
+      <div class="sidebar-note"><span class="eyebrow">边学，边记录</span><p>从一个可手算的例子开始，回到自己的实现验证。</p><a href="/experiments/">查看实验记录 ↗</a></div>
+      <a class="sidebar-reference" href="/source/tasks/">进度与原始证据 ↗</a>
+    </aside>
+    <main id="main" class="chapter-main" data-chapter={chapter.slug}>
+      <div class="breadcrumb"><a href="/learn/">学习手册</a><span>/</span><span>第 {chapter.number} 章</span></div>
+      <div class="eyebrow chapter-eyebrow">{chapter.english}</div>
+      <h1 class="chapter-title">{frontmatter.title}</h1>
+      <p class="chapter-description">{frontmatter.description}</p>
+      <div class="chapter-meta"><span class:list={['status', { pending: !chapter.complete }]}><i></i>{chapter.complete ? '练习自检通过' : '待完成练习'}</span><span>M1 · 训练基础</span><a href={`/source/${chapter.slug}/`}>Python 源码 ↗</a></div>
+      <article class="prose"><slot /></article>
+      <nav class="chapter-pagination" aria-label="前后章节">{previous ? <a href={`/learn/${previous.slug}/`}><small>← 上一章</small><span>{previous.title}</span></a> : <a href="/learn/"><small>← 返回</small><span>学习手册</span></a>}{next && <a href={`/learn/${next.slug}/`} class="next-chapter"><small>下一章 →</small><span>{next.title}</span></a>}</nav>
+    </main>
+    <aside class="page-toc"><div class="sidebar-label">本章内容</div><nav aria-label="本页目录">{headings.filter(heading => heading.depth === 2).map(heading => <a href={`#${heading.slug}`}>{heading.text}</a>)}</nav><div class="toc-line"></div><a href={`/source/${chapter.slug}/`} class="toc-source">对照源代码 ↗</a></aside>
+  </div>
+  <script>
+    const slug = document.querySelector<HTMLElement>('[data-chapter]')?.dataset.chapter;
+    if (slug) { try { localStorage.setItem('llm-lab-last-chapter', slug); } catch { /* 浏览器禁止存储时仍可正常阅读。 */ } }
+    // 旧章节锚点仍能展开笔记中的目标内容。
+    const revealHash = () => {
+      let id = '';
+      try { id = decodeURIComponent(location.hash.slice(1)); } catch { return; }
+      const target = document.getElementById(id);
+      if (!target) return;
+      let parent = target.parentElement;
+      while (parent) {
+        if (parent instanceof HTMLDetailsElement) parent.open = true;
+        parent = parent.parentElement;
+      }
+      requestAnimationFrame(() => target.scrollIntoView());
+    };
+    if (location.hash) revealHash();
+    window.addEventListener('hashchange', revealHash);
+  </script>
+</BaseLayout>

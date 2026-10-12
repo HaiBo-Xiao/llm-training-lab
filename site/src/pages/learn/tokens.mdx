@@ -1,0 +1,84 @@
+---
+layout: ../../layouts/ChapterLayout.astro
+chapter: tokens
+title: 字符、词表与预测目标
+description: 一句话如何变成数字，每个位置又在预测什么？
+---
+
+import { TokenLab } from '../../components/DataWalkthrough';
+import ManimLessons from '../../components/ManimLessons.astro';
+
+模型的计算从数字开始。本轮约定一个字符就是一个 token。下面四段动画依次展示词表、编码、解码，以及输入和目标的构造。
+
+## 按小节看实现
+
+<ManimLessons chapter="tokens" />
+
+## 自己动手验证
+
+<details className="lab-disclosure">
+<summary>打开字符编码实验</summary>
+<div>
+
+输入词表内的文本，对照编码结果、输入前缀与预测目标。
+
+<TokenLab client:load />
+
+</div>
+</details>
+
+## 文字与代码对照
+
+<details className="chapter-reading">
+<summary>展开完整笔记、手算与复习题</summary>
+<div>
+
+### 编码与解码
+
+对原始文本去重、排序，得到词表 `['。', '吃', '小', '猫', '鱼']`。`stoi` 是 string-to-integer，负责字符到 ID；`itos` 负责反方向的映射。
+
+```text
+字符： 小  猫  吃  鱼  。
+ID：   2   3   1   4   0
+
+encode("小猫吃鱼。") → [2, 3, 1, 4, 0]
+decode([2, 3, 1, 4, 0]) → "小猫吃鱼。"
+```
+
+编码再解码应还原出原文。本轮只处理词表内字符；下一章再引入未知字符记号。
+
+### 输入与目标错开一格
+
+每个输入位置的目标，是原序列中紧接着它的字符。去掉原序列最后一项得到输入 x，去掉第一项得到目标 y。
+
+```text
+完整序列： [2, 3, 1, 4, 0]  小猫吃鱼。
+输入 x：   [2, 3, 1, 4]     小猫吃鱼
+目标 y：   [3, 1, 4, 0]     猫吃鱼。
+```
+
+| 输入位置 | 此时允许使用的前缀 | 要预测的字符 |
+| --- | --- | --- |
+| 0 | 小 | 猫 |
+| 1 | 小猫 | 吃 |
+| 2 | 小猫吃 | 鱼 |
+| 3 | 小猫吃鱼 | 。 |
+
+这里准备好了任务。真正限制模型读取未来信息，需要后续的[因果遮罩](/learn/attention/)。
+
+### 回到自己的实现
+
+[01_inspect_tokens.py](/source/tokens/) 包含词表、正反字典、编码、解码，以及 x/y 构造。自检验证了词表顺序、字典互逆、编码往返和目标位移。
+
+实现提交为 `dbc7cf1`；2026-10-09 复核退出码为 0，见 [任务记录](/source/tasks/)。
+
+### 检查自己的理解
+
+<details><summary>为什么不把字符 ID 直接当成它的数值特征？</summary><div>ID 只是词表行号。重新编号不应该改变字符含义，ID 的差值也没有语义上的距离。后续通过 embedding 查出参与计算的向量。</div></details>
+
+<details><summary>目标已经向后错开一格，计算损失时还需要再移动一次吗？</summary><div>不需要。这里的 x 和 y 已经逐位置对齐。再次位移会变成预测更后面的字符。后续使用带内部位移的模型接口时，需要另行核对接口约定。</div></details>
+
+<div className="callout"><strong>本轮边界</strong>纯 Python 数据构造，尚未构建模型或运行训练。这里的字符级词表，也不等同于后续 Qwen 使用的 tokenizer。</div>
+
+</div>
+</details>

@@ -1,0 +1,142 @@
+---
+import animations from '../data/animations.json';
+import '../styles/cinema.css';
+interface Props { chapter: string }
+const lessons = animations.filter(item => item.chapter === Astro.props.chapter);
+if (!lessons.length) throw new Error(`没有找到 ${Astro.props.chapter} 的动画，请先运行 visuals/manim/render.py`);
+const first = lessons[0];
+const clock = (seconds: number) => `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, '0')}`;
+---
+<lesson-cinema data-lessons={JSON.stringify(lessons)}>
+  <div class="cinema-heading">
+    <span>实现动画 <span class="cinema-count">{lessons.length} 个小节</span></span>
+    <span>字幕讲解 · 无配音</span>
+  </div>
+  <video controls playsinline preload="metadata" src={first.src} poster={first.poster} width="1280" height="720" aria-label={`${first.title}：实现动画`}>
+    <track kind="captions" src={first.captions} srclang="zh" label="中文" />
+    <p>当前浏览器无法播放视频。<a href={first.src}>下载 MP4</a></p>
+  </video>
+  <div class="cinema-current">
+    <h3 data-title aria-live="polite">{first.title}</h3>
+    <p data-description>{first.summary}</p>
+  </div>
+  <div class="cinema-controls" data-enhanced hidden>
+    <div class="cinema-paging">
+      <button type="button" data-previous disabled aria-label="上一小节">← 上一节</button>
+      <button type="button" data-next aria-label="下一小节">下一节 →</button>
+    </div>
+    <label class="cinema-speed">倍速 <select aria-label="动画播放速度"><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option></select></label>
+    <label class="cinema-autoplay"><input type="checkbox" /> 连播本章</label>
+  </div>
+  <p class="cinema-error" role="alert" hidden>视频暂时无法播放，请使用下方下载链接打开。</p>
+  <div class="cinema-lessons" role="group" aria-label="选择实现小节" data-enhanced hidden>
+    {lessons.map((lesson, index) => <button type="button" data-index={index} aria-pressed={index === 0}>
+      <span class="cinema-number">{String(index + 1).padStart(2, '0')}</span>
+      <span class="cinema-lesson-title">{lesson.title}<small>{lesson.function}</small></span>
+      <span class="cinema-duration">{clock(Math.round(lesson.duration))}</span>
+    </button>)}
+  </div>
+  <details class="cinema-transcript">
+    <summary>逐步讲解与时间点</summary>
+    <div>
+      <p class="cinema-transcript-hint">点击一句讲解，可暂停在对应步骤。</p>
+      <ol data-cues>{first.cues.map(cue => <li><button type="button" data-time={cue.start}><time>{clock(cue.start)}</time><span>{cue.text}</span></button></li>)}</ol>
+    </div>
+  </details>
+  <div class="cinema-links"><a data-download href={first.src} download>下载本节视频 ↓</a><a href={`/source/${Astro.props.chapter}/`}>对照 Python 源码 ↗</a></div>
+  <noscript><p>其他小节：{lessons.map(lesson => <a href={lesson.src}>{lesson.title}　</a>)}</p></noscript>
+</lesson-cinema>
+
+<script>
+  interface Cue { start: number; end: number; text: string }
+  interface Lesson { id: string; title: string; summary: string; src: string; poster: string; captions: string; duration: number; cues: Cue[] }
+  const clock = (seconds: number) => `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, '0')}`;
+  class LessonCinema extends HTMLElement {
+    connectedCallback() {
+      if (this.dataset.ready) return;
+      this.dataset.ready = 'true';
+      const lessons: Lesson[] = JSON.parse(this.dataset.lessons!);
+      const video = this.querySelector('video')!;
+      const track = this.querySelector('track')!;
+      const title = this.querySelector('[data-title]')!;
+      const description = this.querySelector('[data-description]')!;
+      const previous = this.querySelector<HTMLButtonElement>('[data-previous]')!;
+      const next = this.querySelector<HTMLButtonElement>('[data-next]')!;
+      const speed = this.querySelector('select')!;
+      const autoplay = this.querySelector('input')!;
+      const error = this.querySelector<HTMLElement>('.cinema-error')!;
+      const cues = this.querySelector('[data-cues]')!;
+      const choices = [...this.querySelectorAll<HTMLButtonElement>('[data-index]')];
+      const download = this.querySelector<HTMLAnchorElement>('[data-download]')!;
+      let selected = 0;
+      const selectLesson = (index: number, play = false, updateHash = true) => {
+        if (index < 0 || index >= lessons.length) return;
+        video.pause();
+        selected = index;
+        const lesson = lessons[index];
+        video.src = lesson.src;
+        video.poster = lesson.poster;
+        video.setAttribute('aria-label', `${lesson.title}：实现动画`);
+        track.src = lesson.captions;
+        video.load();
+        video.playbackRate = Number(speed.value);
+        title.textContent = lesson.title;
+        description.textContent = lesson.summary;
+        download.href = lesson.src;
+        previous.disabled = index === 0;
+        next.disabled = index === lessons.length - 1;
+        error.hidden = true;
+        choices.forEach((button, i) => button.setAttribute('aria-pressed', String(i === index)));
+        cues.replaceChildren(...lesson.cues.map(cue => {
+          const li = document.createElement('li');
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.dataset.time = String(cue.start);
+          const time = document.createElement('time');
+          time.textContent = clock(cue.start);
+          const text = document.createElement('span');
+          text.textContent = cue.text;
+          button.append(time, text);
+          li.append(button);
+          return li;
+        }));
+        if (updateHash) history.replaceState(null, '', `#${lesson.id}`);
+        if (play) video.play().catch(reason => {
+          if (selected === index && reason.name !== 'AbortError' && reason.name !== 'NotAllowedError') error.hidden = false;
+        });
+      };
+      choices.forEach((button, i) => button.addEventListener('click', () => selectLesson(i)));
+      previous.addEventListener('click', () => selectLesson(selected - 1));
+      next.addEventListener('click', () => selectLesson(selected + 1));
+      speed.addEventListener('change', () => { video.playbackRate = Number(speed.value); });
+      video.addEventListener('ended', () => { if (autoplay.checked) selectLesson(selected + 1, true); });
+      video.addEventListener('error', () => { error.hidden = false; });
+      // 暂停时原生控制条可能遮住画面字幕，正文同步保留当前步骤。
+      video.addEventListener('timeupdate', () => {
+        const cue = lessons[selected].cues.find(cue => video.currentTime >= cue.start && video.currentTime < cue.end);
+        if (cue) description.textContent = cue.text;
+      });
+      cues.addEventListener('click', event => {
+        const button = (event.target as Element).closest<HTMLButtonElement>('button[data-time]');
+        if (!button) return;
+        const index = selected;
+        const seek = () => {
+          if (selected !== index) return;
+          video.pause();
+          // 跳到文字和数据落定后的画面，便于暂停观察。
+          video.currentTime = Math.min(Number(button.dataset.time) + 1, video.duration - 0.1);
+        };
+        if (video.readyState >= 1) seek();
+        else video.addEventListener('loadedmetadata', seek, { once: true });
+      });
+      const readHash = () => {
+        const index = lessons.findIndex(lesson => `#${lesson.id}` === window.location.hash);
+        if (index >= 0) selectLesson(index, false, false);
+      };
+      window.addEventListener('hashchange', readHash);
+      readHash();
+      this.querySelectorAll<HTMLElement>('[data-enhanced]').forEach(element => { element.hidden = false; });
+    }
+  }
+  if (!customElements.get('lesson-cinema')) customElements.define('lesson-cinema', LessonCinema);
+</script>

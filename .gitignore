@@ -35,3 +35,10 @@ data/processed/
 # OS
 .DS_Store
 Thumbs.db
+
+# Learning website
+site/node_modules/
+site/dist/
+site/.astro/
+site/.playwright/
+site/test-results/

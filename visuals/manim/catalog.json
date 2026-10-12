@@ -1,0 +1,21 @@
+[
+  {"id":"tokens-vocabulary","chapter":"tokens","scene":"TokenVocabularyScene","title":"词表与双向字典","function":"vocab · stoi · itos","summary":"字符去重、排序、编号，建立字符与 ID 的双向对应。"},
+  {"id":"tokens-encode","chapter":"tokens","scene":"TokenEncodeScene","title":"逐字符编码","function":"encode","summary":"逐个查找字符的 ID，按原顺序追加到结果。"},
+  {"id":"tokens-decode","chapter":"tokens","scene":"TokenDecodeScene","title":"解码还原文本","function":"decode","summary":"ID 逐个查回字符，再拼接成原始文本。"},
+  {"id":"tokens-shift","chapter":"tokens","scene":"TokenShiftScene","title":"输入与目标位移","function":"x · y","summary":"同一序列切出两份数组，逐位置看清前缀与目标的对应。"},
+  {"id":"batches-split","chapter":"batches","scene":"BatchSplitScene","title":"训练与验证划分","function":"train_text · val_text","summary":"从连续文本确定切分点，保留顺序与分区边界。"},
+  {"id":"batches-vocabulary","chapter":"batches","scene":"BatchVocabularyScene","title":"训练词表与未知记号","function":"vocab","summary":"只用训练文本去重排序，把 <unk> 放在编号 0。"},
+  {"id":"batches-unknown","chapter":"batches","scene":"BatchUnknownScene","title":"识别词表外字符","function":"unknown_chars","summary":"逐项检查、筛选、去重，报告未知字符的种类。"},
+  {"id":"batches-encode","chapter":"batches","scene":"BatchEncodeScene","title":"保留未知字符的位置","function":"encode","summary":"未知字符映射到 ID 0，序列长度和位置对应关系保持不变。"},
+  {"id":"batches-window","chapter":"batches","scene":"BatchWindowScene","title":"取出一条定长样本","function":"get_sample","summary":"窗口从 k = 0 移到 k = 1，展示 T + 1 个 ID 如何产生 x 和 y。"},
+  {"id":"batches-stack","chapter":"batches","scene":"BatchStackScene","title":"按行组成一个批次","function":"get_batch","summary":"两条样本分别放进 xb、yb，对比 k0 = 0 与 k0 = 1。"},
+  {"id":"forward-tensor","chapter":"forward","scene":"ForwardTensorScene","title":"列表转为整数张量","function":"to_tensor","summary":"逐元素保留输入与目标，转换为形状 [B, T] 的整数张量。"},
+  {"id":"forward-embedding","chapter":"forward","scene":"ForwardEmbeddingScene","title":"Embedding 查表","function":"lookup_embeddings","summary":"每个 ID 选择词表的一行，展示全部六个位置的向量。"},
+  {"id":"forward-logits","chapter":"forward","scene":"ForwardLogitsScene","title":"向量投影为分数","function":"project_logits","summary":"向量与权重矩阵逐列做点积，再汇总完整 batch 的 logits。"},
+  {"id":"forward-predict","chapter":"forward","scene":"ForwardPredictScene","title":"选出预测 ID","function":"predict_ids","summary":"沿候选 token 维取最大值的位置，恢复 [B, T] 形状。"},
+  {"id":"attention-scores","chapter":"attention","scene":"AttentionScoresScene","title":"缩放点积分数","function":"attention_scores","summary":"逐行、逐列对齐 Q 与 K，算出 3 × 3 分数矩阵。"},
+  {"id":"attention-mask","chapter":"attention","scene":"AttentionMaskScene","title":"屏蔽未来位置","function":"apply_causal_mask","summary":"按行保留可见分数，把未来位置替换为负无穷。"},
+  {"id":"attention-softmax","chapter":"attention","scene":"AttentionSoftmaxScene","title":"逐行归一化","function":"attention_weights","summary":"分数取指数、计算分母、逐项相除，得到读取权重。"},
+  {"id":"attention-values","chapter":"attention","scene":"AttentionValuesScene","title":"加权汇总 V","function":"attend_values","summary":"每个权重乘对应的 V 向量，按分量相加得到完整输出。"},
+  {"id":"attention-causality","chapter":"attention","scene":"AttentionCausalityScene","title":"验证因果不变性","function":"因果性自检","summary":"修改未来 V，直接比较前面位置与当前位置的输出变化。"}
+]

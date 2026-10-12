@@ -1,0 +1,111 @@
+---
+layout: ../../layouts/ChapterLayout.astro
+chapter: attention
+title: 因果自注意力
+description: 让每个位置，只读取已经出现的信息。
+---
+
+import AttentionLab from '../../components/AttentionLab';
+import ManimLessons from '../../components/ManimLessons.astro';
+
+把因果自注意力拆成四个实现小节，再用一段动画验证因果性。例子使用三个位置、二维向量，每一步都展示完整的小张量。
+
+## 按小节看实现
+
+<ManimLessons chapter="attention" />
+
+## 自己动手验证
+
+<details className="lab-disclosure">
+<summary>打开注意力验证实验</summary>
+<div>
+
+改变位置 2 的 V，再关闭遮罩，比较前面位置的输出。
+
+<AttentionLab client:load />
+
+</div>
+</details>
+
+## 文字与代码对照
+
+<details className="chapter-reading">
+<summary>展开完整笔记、手算与复习题</summary>
+<div>
+
+### Q、K、V 分别做什么
+
+每个位置都有三种向量。<strong>Q（Query，查询）</strong>与其他位置的 <strong>K（Key，键）</strong>比较，得到读取权重；这些权重再用来汇总 <strong>V（Value，值）</strong>中实际传递的信息。
+
+本轮直接给定 Q、K、V，尚未从 embedding 学习出它们的投影。
+
+| 位置 | Q 查询向量 | K 键向量 | V 值向量 |
+| --- | --- | --- | --- |
+| 0 | [1, 0] | [1, 0] | [1, 0] |
+| 1 | [0, 1] | [0, 1] | [0, 1] |
+| 2 | [1, 1] | [1, 1] | [2, 2] |
+
+序列长度 $T = 3$，每个向量的维度 $D = 2$。Q、K、V 的形状都是 $[3, 2]$。位置编号从 0 开始。
+
+### 手算位置 1 的输出
+
+**第一步：比较 Q 与 K。** 每个查询向量和所有键向量做点积，再除以 $\sqrt D$，控制点积随维度增大时的尺度。得到的分数矩阵有 $T$ 行、$T$ 列。
+
+$$
+S = \frac{QK^\mathsf{T}}{\sqrt D}
+$$
+
+第 1 行用 Q₁ = [0, 1] 分别与三个 K 比较，得到：
+
+```text
+与 K₀：[0, 1] · [1, 0] / √2 = 0
+与 K₁：[0, 1] · [0, 1] / √2 ≈ 0.7071
+与 K₂：[0, 1] · [1, 1] / √2 ≈ 0.7071
+
+第 1 行分数：[0, 0.7071, 0.7071]
+```
+
+**第二步：遮住未来。** 位置 1 可以读取 0 和 1，不能读取位置 2。将最后一项替换为负无穷，得到 `[0, 0.7071, −∞]`。所有行一起看，屏蔽区域就是矩阵的上三角，不包含对角线。
+
+**第三步：变成权重。** softmax 在每一行内归一化，负无穷对应的权重为 0。
+
+$$
+a_{ij} = \frac{\exp(S^{\mathrm{masked}}_{ij})}{\sum_{k=0}^{T-1}\exp(S^{\mathrm{masked}}_{ik})}
+$$
+
+其中 $a_{ij}$ 是位置 $i$ 读取位置 $j$ 的权重。第 1 行的分母约为 $1 + 2.0281 + 0 = 3.0281$，权重约为 `[0.3302, 0.6698, 0]`。
+
+**第四步：汇总 V。** 权重乘上对应的值向量，再相加：
+
+```text
+输出₁ = 0.3302 × [1, 0] + 0.6698 × [0, 1] + 0 × [2, 2]
+      = [0.3302, 0.6698]
+```
+
+最后一项的权重为 0。因此，即使将 V₂ 改为 `[100, 100]`，这里的输出也不会改变。
+
+### 回到自己的实现
+
+练习已经把计算拆成四个函数。阅读时沿着中间张量向下追踪，核对每一步的输入、输出和形状。
+
+| 函数 | 输入 → 输出形状 | 对应职责 |
+| --- | --- | --- |
+| `attention_scores` | [T, D]、[T, D] → [T, T] | 缩放点积分数 |
+| `apply_causal_mask` | [T, T] → [T, T] | 屏蔽未来分数 |
+| `attention_weights` | [T, T] → [T, T] | 沿每行归一化 |
+| `attend_values` | [T, T]、[T, D] → [T, D] | 加权汇总 V |
+
+完整实现与自检见 [04_inspect_attention.py](/source/attention/)。项目记录的实现提交为 `ef29806`，2026-10-09 在 macOS CPU 上复核退出码为 0，见 [任务记录](/source/tasks/)。
+
+### 检查自己的理解
+
+<details><summary>1. 第 0 个位置的注意力权重为什么一定是 [1, 0, 0]？</summary><div>启用因果遮罩后，这一行只剩位置 0 可见。对唯一的有限分数做 softmax，权重就是 1；两个未来位置的权重都是 0。</div></details>
+
+<details><summary>2. 把未来分数设为 0，和设为负无穷，效果相同吗？</summary><div>不同。exp(0) = 1，仍会占据归一化分母并获得非零权重。这里需要在 softmax 前将未来分数设为负无穷，使其指数为 0。</div></details>
+
+<details><summary>3. 修改 V₂ 后，为什么位置 2 自己可以变化？</summary><div>因果遮罩允许读取当前位置。第 2 行的第 2 项权重非零，所以 V₂ 的变化会影响它的输出。演示只修改 V，Q 和 K 保持固定，因此注意力权重保持不变。</div></details>
+
+<div className="callout"><strong>下一步的连接</strong>当前还没有 batch 维、多头投影、位置编码、FFN、残差或参数更新。接下来先理解 logits 和有效 token 的损失，再逐步组合完整 decoder-only 模型。</div>
+
+</div>
+</details>

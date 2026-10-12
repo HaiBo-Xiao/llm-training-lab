@@ -1,0 +1,17 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroAttention from '../components/HeroAttention';
+import ChapterList from '../components/ChapterList.astro';
+---
+<BaseLayout active="home">
+  <main id="main">
+    <section class="hero container">
+      <div class="hero-copy"><div class="eyebrow"><span class="tiny-line"></span> A PERSONAL LEARNING LAB</div><h1>让每一次计算，<br/>都有迹可循<span class="hero-period">。</span></h1><p class="hero-description">从字符编码到数学强化学习。<br/>一份持续生长的单卡训练笔记，记录原理、实现和真实的实验。</p><div class="hero-actions"><a class="button primary" href="/learn/">打开学习手册 <span>→</span></a><a class="text-link" href="/learn/attention/">探索注意力 <span>↗</span></a></div><div class="hero-footnote"><span class="status"><i></i>正在学习 M1 · 训练基础</span><span>保持好奇，逐步验证。</span></div></div>
+      <HeroAttention client:load />
+    </section>
+    <div class="context-strip container"><div><span class="eyebrow">THE QUESTION</span><p>语言模型，究竟怎样学习？</p></div><div><span class="eyebrow">THE CONSTRAINT</span><p>一张 RTX 4070 SUPER · 12 GB</p></div><div><span class="eyebrow">THE APPROACH</span><p>小例子 → 亲手实现 → 实验证据</p></div></div>
+    <section class="section container" id="chapters"><div class="section-heading"><div><div class="eyebrow">01 / THE NOTEBOOK</div><h2>从这里，读懂一次计算。</h2></div><a class="text-link" href="/learn/">全部学习内容 <span>→</span></a></div><p class="section-description">每一章都从可手算的例子开始，连接到真实的练习代码。</p><ChapterList /></section>
+    <section class="section journey-section"><div class="container"><div class="section-heading"><div><div class="eyebrow">02 / THE BIG PICTURE</div><h2>理解训练，再研究它的变化。</h2></div><a class="text-link" href="/roadmap/">查看完整路线 <span>→</span></a></div><div class="journey-grid"><div class="journey-item"><div class="journey-label"><span class="mono">M0 — M1</span><span class="status"><i></i>当前主线</span></div><h3>从零开始的小语言模型</h3><p>从数据到前向计算，再逐步走向损失、参数更新和训练循环。</p><div class="journey-steps"><span>数据</span><i>→</i><span>模型</span><i>→</i><span>训练</span><i>→</i><span>验证</span></div></div><div class="journey-item future"><div class="journey-label"><span class="mono">M2 — M5</span><span class="muted">后续计划</span></div><h3>Qwen 上的数学后训练</h3><p>以已有模型为起点，比较 SFT、GRPO 及其组合的效果与计算成本。</p><div class="journey-steps"><span>基线</span><i>→</i><span>SFT / GRPO</span><i>→</i><span>统一评测</span></div></div></div><p class="journey-note">两条模型路线，一套实验习惯。自训练小模型与后训练使用的 Qwen 分别记录。</p></div></section>
+    <section class="section container"><div class="evidence-feature"><div><div class="eyebrow">03 / THE EVIDENCE</div><h2>每一个结论，<br/>都有来处。</h2><p>保留配置、运行输出与检查结果。<br/>第一次验证，从一个参数的更新与恢复开始。</p><a class="text-link" href="/experiments/">阅读第一份实验记录 <span>↗</span></a></div><div class="evidence-preview"><div class="evidence-preview-top"><span class="mono">RUN / m0-20260910-025345</span><span class="status"><i></i>A0 已通过</span></div><div class="evidence-values"><div><span>连续训练</span><strong class="mono">1.62</strong><small>第二步参数 w</small></div><span class="evidence-equals">=</span><div><span>从状态恢复</span><strong class="mono">1.62</strong><small>第二步参数 w</small></div></div><div class="evidence-preview-bottom">单参数 SGD · 内存快照恢复 <span>检查通过 ✓</span></div></div></div></section>
+  </main>
+</BaseLayout>

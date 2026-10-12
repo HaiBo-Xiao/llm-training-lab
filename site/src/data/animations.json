@@ -1,0 +1,885 @@
+[
+  {
+    "id": "tokens-vocabulary",
+    "chapter": "tokens",
+    "scene": "TokenVocabularyScene",
+    "title": "词表与双向字典",
+    "function": "vocab · stoi · itos",
+    "summary": "字符去重、排序、编号，建立字符与 ID 的双向对应。",
+    "duration": 12.708333,
+    "width": 1280,
+    "height": 720,
+    "src": "/animations/tokens-vocabulary.mp4",
+    "poster": "/animations/tokens-vocabulary.jpg",
+    "captions": "/animations/tokens-vocabulary.vtt",
+    "cues": [
+      {
+        "start": 0.0,
+        "text": "原文按顺序是“小猫吃鱼。”，本例一个字符就是一个 token。",
+        "end": 2.417
+      },
+      {
+        "start": 2.417,
+        "text": "去重，再按字符升序排列；原文本身保持原来的顺序。",
+        "end": 6.458
+      },
+      {
+        "start": 6.458,
+        "text": "按位置从 0 编号。“小”的 ID 是 2，而不是第一个编号。",
+        "end": 8.875
+      },
+      {
+        "start": 8.875,
+        "text": "stoi 查字符到 ID；itos 查 ID 到字符，两份字典互为反向。",
+        "end": 12.708
+      }
+    ],
+    "sourceHash": "dfddd586859edce0ee1250a463a83db74f8532ba9578bec067ef2187df155a29"
+  },
+  {
+    "id": "tokens-encode",
+    "chapter": "tokens",
+    "scene": "TokenEncodeScene",
+    "title": "逐字符编码",
+    "function": "encode",
+    "summary": "逐个查找字符的 ID，按原顺序追加到结果。",
+    "duration": 14.75,
+    "width": 1280,
+    "height": 720,
+    "src": "/animations/tokens-encode.mp4",
+    "poster": "/animations/tokens-encode.jpg",
+    "captions": "/animations/tokens-encode.vtt",
+    "cues": [
+      {
+        "start": 0.0,
+        "text": "遍历原文，用同一份 stoi 字典查出每个字符的 ID。",
+        "end": 1.833
+      },
+      {
+        "start": 1.833,
+        "text": "第 0 项：小 → ID 2，追加到输出的第 0 项。",
+        "end": 3.75
+      },
+      {
+        "start": 3.75,
+        "text": "第 1 项：猫 → ID 3，追加到输出的第 1 项。",
+        "end": 5.667
+      },
+      {
+        "start": 5.667,
+        "text": "第 2 项：吃 → ID 1，追加到输出的第 2 项。",
+        "end": 7.583
+      },
+      {
+        "start": 7.583,
+        "text": "第 3 项：鱼 → ID 4，追加到输出的第 3 项。",
+        "end": 9.5
+      },
+      {
+        "start": 9.5,
+        "text": "第 4 项：。 → ID 0，追加到输出的第 4 项。",
+        "end": 11.417
+      },
+      {
+        "start": 11.417,
+        "text": "输出完整序列 [2, 3, 1, 4, 0]，字符顺序和序列长度都保留。",
+        "end": 14.75
+      }
+    ],
+    "sourceHash": "dfddd586859edce0ee1250a463a83db74f8532ba9578bec067ef2187df155a29"
+  },
+  {
+    "id": "tokens-decode",
+    "chapter": "tokens",
+    "scene": "TokenDecodeScene",
+    "title": "解码还原文本",
+    "function": "decode",
+    "summary": "ID 逐个查回字符，再拼接成原始文本。",
+    "duration": 14.291667,
+    "width": 1280,
+    "height": 720,
+    "src": "/animations/tokens-decode.mp4",
+    "poster": "/animations/tokens-decode.jpg",
+    "captions": "/animations/tokens-decode.vtt",
+    "cues": [
+      {
+        "start": 0.0,
+        "text": "解码沿着 itos 反向查表，按传入 ID 的顺序收集字符。",
+        "end": 2.417
+      },
+      {
+        "start": 2.417,
+        "text": "ID 2 → “小”，放回第 0 个位置。",
+        "end": 4.125
+      },
+      {
+        "start": 4.125,
+        "text": "ID 3 → “猫”，放回第 1 个位置。",
+        "end": 5.833
+      },
+      {
+        "start": 5.833,
+        "text": "ID 1 → “吃”，放回第 2 个位置。",
+        "end": 7.542
+      },
+      {
+        "start": 7.542,
+        "text": "ID 4 → “鱼”，放回第 3 个位置。",
+        "end": 9.25
+      },
+      {
+        "start": 9.25,
+        "text": "ID 0 → “。”，放回第 4 个位置。",
+        "end": 10.958
+      },
+      {
+        "start": 10.958,
+        "text": "最后拼成字符串；编码后再解码，得到原始文本。",
+        "end": 14.292
+      }
+    ],
+    "sourceHash": "dfddd586859edce0ee1250a463a83db74f8532ba9578bec067ef2187df155a29"
+  },
+  {
+    "id": "tokens-shift",
+    "chapter": "tokens",
+    "scene": "TokenShiftScene",
+    "title": "输入与目标位移",
+    "function": "x · y",
+    "summary": "同一序列切出两份数组，逐位置看清前缀与目标的对应。",
+    "duration": 18.25,
+    "width": 1280,
+    "height": 720,
+    "src": "/animations/tokens-shift.mp4",
+    "poster": "/animations/tokens-shift.jpg",
+    "captions": "/animations/tokens-shift.vtt",
+    "cues": [
+      {
+        "start": 0.0,
+        "text": "完整序列有五个 ID，它将产生四个预测位置。",
+        "end": 2.417
+      },
+      {
+        "start": 2.417,
+        "text": "输入 x 去掉最后一项，保留前四个 ID。",
+        "end": 4.833
+      },
+      {
+        "start": 4.833,
+        "text": "目标 y 去掉第一项，再移到与 x 相同的列上。",
+        "end": 7.25
+      },
+      {
+        "start": 7.25,
+        "text": "位置 0：输入前缀“小”，预测“猫”。",
+        "end": 9.167
+      },
+      {
+        "start": 9.167,
+        "text": "位置 1：输入前缀“小猫”，预测“吃”。",
+        "end": 11.083
+      },
+      {
+        "start": 11.083,
+        "text": "位置 2：输入前缀“小猫吃”，预测“鱼”。",
+        "end": 13.0
+      },
+      {
+        "start": 13.0,
+        "text": "位置 3：输入前缀“小猫吃鱼”，预测“。”。",
+        "end": 14.917
+      },
+      {
+        "start": 14.917,
+        "text": "这里准备预测任务；限制模型读取未来，需要后面的因果遮罩。",
+        "end": 18.25
+      }
+    ],
+    "sourceHash": "dfddd586859edce0ee1250a463a83db74f8532ba9578bec067ef2187df155a29"
+  },
+  {
+    "id": "batches-split",
+    "chapter": "batches",
+    "scene": "BatchSplitScene",
+    "title": "训练与验证划分",
+    "function": "train_text · val_text",
+    "summary": "从连续文本确定切分点，保留顺序与分区边界。",
+    "duration": 11.083333,
+    "width": 1280,
+    "height": 720,
+    "src": "/animations/batches-split.mp4",
+    "poster": "/animations/batches-split.jpg",
+    "captions": "/animations/batches-split.vtt",
+    "cues": [
+      {
+        "start": 0.0,
+        "text": "先看独立小例子：5 个字符，训练比例为 0.6。",
+        "end": 2.417
+      },
+      {
+        "start": 2.417,
+        "text": "切分点是下标 3，前 3 个归训练，剩下 2 个归验证。",
+        "end": 4.833
+      },
+      {
+        "start": 4.833,
+        "text": "连续切分保留顺序；两段分别建样本，不能跨边界取数据。",
+        "end": 7.25
+      },
+      {
+        "start": 7.25,
+        "text": "回到脚本：185 × 0.9 向下取整为 166，验证段有 19 个字符。",
+        "end": 11.083
+      }
+    ],
+    "sourceHash": "5ea9c853890c4da44cb2ea49776e2479322e2220f8436ed12f7b49b078ec7be7"
+  },
+  {
+    "id": "batches-vocabulary",
+    "chapter": "batches",
+    "scene": "BatchVocabularyScene",
+    "title": "训练词表与未知记号",
+    "function": "vocab",
+    "summary": "只用训练文本去重排序，把 <unk> 放在编号 0。",
+    "duration": 10.583333,
+    "width": 1280,
+    "height": 720,
+    "src": "/animations/batches-vocabulary.mp4",
+    "poster": "/animations/batches-vocabulary.jpg",
+    "captions": "/animations/batches-vocabulary.vtt",
+    "cues": [
+      {
+        "start": 0.0,
+        "text": "独立训练文本“猫小猫”，同一个字符只需要一个词表位置。",
+        "end": 2.417
+      },
+      {
+        "start": 2.417,
+        "text": "去重后按固定顺序排列，两次出现的“猫”合并到同一项。",
+        "end": 4.833
+      },
+      {
+        "start": 4.833,
+        "text": "把未知字符记号放在第 0 项，其余字符的编号依次后移。",
+        "end": 7.25
+      },
+      {
+        "start": 7.25,
+        "text": "实际语料有 94 种训练字符，加上 <unk> 共 95 项。",
+        "end": 10.583
+      }
+    ],
+    "sourceHash": "5ea9c853890c4da44cb2ea49776e2479322e2220f8436ed12f7b49b078ec7be7"
+  },
+  {
+    "id": "batches-unknown",
+    "chapter": "batches",
+    "scene": "BatchUnknownScene",
+    "title": "识别词表外字符",
+    "function": "unknown_chars",
+    "summary": "逐项检查、筛选、去重，报告未知字符的种类。",
+    "duration": 10.583333,
+    "width": 1280,
+    "height": 720,
+    "src": "/animations/batches-unknown.mp4",
+    "poster": "/animations/batches-unknown.jpg",
+    "captions": "/animations/batches-unknown.vtt",
+    "cues": [
+      {
+        "start": 0.0,
+        "text": "输入“沙猫沙层”，逐个判断字符是否在训练词表中。",
+        "end": 2.417
+      },
+      {
+        "start": 2.417,
+        "text": "“猫”能查到；“沙”和“层”查不到，先收集三次未知出现。",
+        "end": 4.833
+      },
+      {
+        "start": 4.833,
+        "text": "报告的是未知字符的种类：去重、排序，得到“层、沙”。",
+        "end": 7.25
+      },
+      {
+        "start": 7.25,
+        "text": "实际验证段有 6 种未知字符：层、早、果、沙、留、细。",
+        "end": 10.583
+      }
+    ],
+    "sourceHash": "5ea9c853890c4da44cb2ea49776e2479322e2220f8436ed12f7b49b078ec7be7"
+  },
+  {
+    "id": "batches-encode",
+    "chapter": "batches",
+    "scene": "BatchEncodeScene",
+    "title": "保留未知字符的位置",
+    "function": "encode",
+    "summary": "未知字符映射到 ID 0，序列长度和位置对应关系保持不变。",
+    "duration": 14.25,
+    "width": 1280,
+    "height": 720,
+    "src": "/animations/batches-encode.mp4",
+    "poster": "/animations/batches-encode.jpg",
+    "captions": "/animations/batches-encode.vtt",
+    "cues": [
+      {
+        "start": 0.0,
+        "text": "这次词表来自训练段，编号和第一章不同。",
+        "end": 2.417
+      },
+      {
+        "start": 2.417,
+        "text": "“小”在词表中 → ID 34。",
+        "end": 4.417
+      },
+      {
+        "start": 4.417,
+        "text": "“猫”在词表中 → ID 60。",
+        "end": 6.417
+      },
+      {
+        "start": 6.417,
+        "text": "“吃”在词表中 → ID 25。",
+        "end": 8.417
+      },
+      {
+        "start": 8.417,
+        "text": "“沙”不在训练词表中 → <unk> 的 ID 0。",
+        "end": 10.417
+      },
+      {
+        "start": 10.417,
+        "text": "不能跳过未知字符：四个字符仍对应四个 ID，位置才不会错乱。",
+        "end": 14.25
+      }
+    ],
+    "sourceHash": "5ea9c853890c4da44cb2ea49776e2479322e2220f8436ed12f7b49b078ec7be7"
+  },
+  {
+    "id": "batches-window",
+    "chapter": "batches",
+    "scene": "BatchWindowScene",
+    "title": "取出一条定长样本",
+    "function": "get_sample",
+    "summary": "窗口从 k = 0 移到 k = 1，展示 T + 1 个 ID 如何产生 x 和 y。",
+    "duration": 14.416667,
+    "width": 1280,
+    "height": 720,
+    "src": "/animations/batches-window.mp4",
+    "poster": "/animations/batches-window.jpg",
+    "captions": "/animations/batches-window.vtt",
+    "cues": [
+      {
+        "start": 0.0,
+        "text": "上方是下标，下方是示意 token ID；T = 3 需要连续 4 个 ID。",
+        "end": 2.417
+      },
+      {
+        "start": 2.417,
+        "text": "k = 0，从下标 0 取到 3：前 3 项是 x，后 3 项是 y。",
+        "end": 5.75
+      },
+      {
+        "start": 5.75,
+        "text": "k = 1，起点前进 T = 3 个位置，选下标 3 到 6。",
+        "end": 8.167
+      },
+      {
+        "start": 8.167,
+        "text": "新的输入为 [13, 14, 15]，目标为 [14, 15, 16]。",
+        "end": 10.583
+      },
+      {
+        "start": 10.583,
+        "text": "ID 13 是上一条最后的目标，也是这一条最先的输入。",
+        "end": 14.417
+      }
+    ],
+    "sourceHash": "5ea9c853890c4da44cb2ea49776e2479322e2220f8436ed12f7b49b078ec7be7"
+  },
+  {
+    "id": "batches-stack",
+    "chapter": "batches",
+    "scene": "BatchStackScene",
+    "title": "按行组成一个批次",
+    "function": "get_batch",
+    "summary": "两条样本分别放进 xb、yb，对比 k0 = 0 与 k0 = 1。",
+    "duration": 17.666667,
+    "width": 1280,
+    "height": 720,
+    "src": "/animations/batches-stack.mp4",
+    "poster": "/animations/batches-stack.jpg",
+    "captions": "/animations/batches-stack.vtt",
+    "cues": [
+      {
+        "start": 0.0,
+        "text": "k0 = 0，连续取第 0、1 条样本，分别成为 batch 的两行。",
+        "end": 2.417
+      },
+      {
+        "start": 2.417,
+        "text": "样本 0 → 第 0 行；输入与目标按同样的顺序放置。",
+        "end": 5.25
+      },
+      {
+        "start": 5.25,
+        "text": "样本 1 → 第 1 行；输入与目标按同样的顺序放置。",
+        "end": 8.083
+      },
+      {
+        "start": 8.083,
+        "text": "每行保留自己的上下文，这一批有 2 × 3 = 6 个预测位置。",
+        "end": 10.5
+      },
+      {
+        "start": 10.5,
+        "text": "k0 = 1 时，改取第 1、2 条样本；两边一起移动。",
+        "end": 13.833
+      },
+      {
+        "start": 13.833,
+        "text": "实际训练段有 20 条完整样本；验证段只有 2 条，不足一整批。",
+        "end": 17.667
+      }
+    ],
+    "sourceHash": "5ea9c853890c4da44cb2ea49776e2479322e2220f8436ed12f7b49b078ec7be7"
+  },
+  {
+    "id": "forward-tensor",
+    "chapter": "forward",
+    "scene": "ForwardTensorScene",
+    "title": "列表转为整数张量",
+    "function": "to_tensor",
+    "summary": "逐元素保留输入与目标，转换为形状 [B, T] 的整数张量。",
+    "duration": 12.5,
+    "width": 1280,
+    "height": 720,
+    "src": "/animations/forward-tensor.mp4",
+    "poster": "/animations/forward-tensor.jpg",
+    "captions": "/animations/forward-tensor.vtt",
+    "cues": [
+      {
+        "start": 0.0,
+        "text": "输入列表 xb 与目标列表 yb 已经对齐，转换时保持每一个位置。",
+        "end": 2.417
+      },
+      {
+        "start": 2.417,
+        "text": "把两层列表变成二维张量，六个 ID 的数值与顺序完全保留。",
+        "end": 6.25
+      },
+      {
+        "start": 6.25,
+        "text": "shape = [2, 3]，dtype = torch.long；ID 是整数查表下标。",
+        "end": 8.667
+      },
+      {
+        "start": 8.667,
+        "text": "目标已经对应下一个 token，这里不能再移动一次。",
+        "end": 12.5
+      }
+    ],
+    "sourceHash": "d8642b0d5305dd9b3ccbb621f2010d7aed26993e5cd0226dae37b204859152c5"
+  },
+  {
+    "id": "forward-embedding",
+    "chapter": "forward",
+    "scene": "ForwardEmbeddingScene",
+    "title": "Embedding 查表",
+    "function": "lookup_embeddings",
+    "summary": "每个 ID 选择词表的一行，展示全部六个位置的向量。",
+    "duration": 17.25,
+    "width": 1280,
+    "height": 720,
+    "src": "/animations/forward-embedding.mp4",
+    "poster": "/animations/forward-embedding.jpg",
+    "captions": "/animations/forward-embedding.vtt",
+    "cues": [
+      {
+        "start": 0.0,
+        "text": "E 有 4 行、2 列；每个 ID 选择对应的一整行。",
+        "end": 2.417
+      },
+      {
+        "start": 2.417,
+        "text": "x[0, 0] = 1 → E 第 1 行 → [1, 0]。",
+        "end": 4.25
+      },
+      {
+        "start": 4.25,
+        "text": "x[0, 1] = 2 → E 第 2 行 → [0, 1]。",
+        "end": 6.083
+      },
+      {
+        "start": 6.083,
+        "text": "x[0, 2] = 3 → E 第 3 行 → [1, 1]。",
+        "end": 7.917
+      },
+      {
+        "start": 7.917,
+        "text": "x[1, 0] = 0 → E 第 0 行 → [0, 0]。",
+        "end": 9.75
+      },
+      {
+        "start": 9.75,
+        "text": "x[1, 1] = 1 → E 第 1 行 → [1, 0]。",
+        "end": 11.583
+      },
+      {
+        "start": 11.583,
+        "text": "x[1, 2] = 2 → E 第 2 行 → [0, 1]。",
+        "end": 13.417
+      },
+      {
+        "start": 13.417,
+        "text": "B、T 两维保持不变，每个位置增加 D = 2 个分量。",
+        "end": 17.25
+      }
+    ],
+    "sourceHash": "d8642b0d5305dd9b3ccbb621f2010d7aed26993e5cd0226dae37b204859152c5"
+  },
+  {
+    "id": "forward-logits",
+    "chapter": "forward",
+    "scene": "ForwardLogitsScene",
+    "title": "向量投影为分数",
+    "function": "project_logits",
+    "summary": "向量与权重矩阵逐列做点积，再汇总完整 batch 的 logits。",
+    "duration": 20.083008,
+    "width": 1280,
+    "height": 720,
+    "src": "/animations/forward-logits.mp4",
+    "poster": "/animations/forward-logits.jpg",
+    "captions": "/animations/forward-logits.vtt",
+    "cues": [
+      {
+        "start": 0.0,
+        "text": "取输入“小”的向量 [1, 0]；W 的每一列对应一个候选 token。",
+        "end": 2.417
+      },
+      {
+        "start": 2.417,
+        "text": "第 0 列：对应分量相乘，再把两个乘积相加。",
+        "end": 5.042
+      },
+      {
+        "start": 5.042,
+        "text": "第 1 列：对应分量相乘，再把两个乘积相加。",
+        "end": 7.667
+      },
+      {
+        "start": 7.667,
+        "text": "第 2 列：对应分量相乘，再把两个乘积相加。",
+        "end": 10.292
+      },
+      {
+        "start": 10.292,
+        "text": "第 3 列：对应分量相乘，再把两个乘积相加。",
+        "end": 12.917
+      },
+      {
+        "start": 12.917,
+        "text": "得到 [0, 1, 2, −1]。logits 是分数，可以为负，还不是概率。",
+        "end": 16.25
+      },
+      {
+        "start": 16.25,
+        "text": "对 batch 里全部六个位置执行同样计算，得到 [2, 3, 4]。",
+        "end": 20.083
+      }
+    ],
+    "sourceHash": "d8642b0d5305dd9b3ccbb621f2010d7aed26993e5cd0226dae37b204859152c5"
+  },
+  {
+    "id": "forward-predict",
+    "chapter": "forward",
+    "scene": "ForwardPredictScene",
+    "title": "选出预测 ID",
+    "function": "predict_ids",
+    "summary": "沿候选 token 维取最大值的位置，恢复 [B, T] 形状。",
+    "duration": 14.416667,
+    "width": 1280,
+    "height": 720,
+    "src": "/animations/forward-predict.mp4",
+    "poster": "/animations/forward-predict.jpg",
+    "captions": "/animations/forward-predict.vtt",
+    "cues": [
+      {
+        "start": 0.0,
+        "text": "四个候选分数为 [0, 1, 2, −1]，上方标的是候选 ID。",
+        "end": 2.417
+      },
+      {
+        "start": 2.417,
+        "text": "最大分数是 2，返回它所在的位置 ID 2，而不是返回分数。",
+        "end": 4.833
+      },
+      {
+        "start": 4.833,
+        "text": "每个位置选一次：完整预测张量变回 [B, T] = [2, 3]。",
+        "end": 7.25
+      },
+      {
+        "start": 7.25,
+        "text": "全零的那一行有并列最大值，argmax 选择第一个候选，即 ID 0。",
+        "end": 10.583
+      },
+      {
+        "start": 10.583,
+        "text": "这是固定权重的计算结果，还没有发生训练或参数更新。",
+        "end": 14.417
+      }
+    ],
+    "sourceHash": "d8642b0d5305dd9b3ccbb621f2010d7aed26993e5cd0226dae37b204859152c5"
+  },
+  {
+    "id": "attention-scores",
+    "chapter": "attention",
+    "scene": "AttentionScoresScene",
+    "title": "缩放点积分数",
+    "function": "attention_scores",
+    "summary": "逐行、逐列对齐 Q 与 K，算出 3 × 3 分数矩阵。",
+    "duration": 20.875,
+    "width": 1280,
+    "height": 720,
+    "src": "/animations/attention-scores.mp4",
+    "poster": "/animations/attention-scores.jpg",
+    "captions": "/animations/attention-scores.vtt",
+    "cues": [
+      {
+        "start": 0.0,
+        "text": "Q 的每一行，与 K 转置后的每一列做点积，再除以 √2。",
+        "end": 2.417
+      },
+      {
+        "start": 2.417,
+        "text": "Q 的第 0 行 × K 的第 0 行 → scores[0, 0]。",
+        "end": 4.042
+      },
+      {
+        "start": 4.042,
+        "text": "Q 的第 0 行 × K 的第 1 行 → scores[0, 1]。",
+        "end": 5.667
+      },
+      {
+        "start": 5.667,
+        "text": "Q 的第 0 行 × K 的第 2 行 → scores[0, 2]。",
+        "end": 7.292
+      },
+      {
+        "start": 7.292,
+        "text": "Q 的第 1 行 × K 的第 0 行 → scores[1, 0]。",
+        "end": 8.917
+      },
+      {
+        "start": 8.917,
+        "text": "Q 的第 1 行 × K 的第 1 行 → scores[1, 1]。",
+        "end": 10.542
+      },
+      {
+        "start": 10.542,
+        "text": "Q 的第 1 行 × K 的第 2 行 → scores[1, 2]。",
+        "end": 12.167
+      },
+      {
+        "start": 12.167,
+        "text": "Q 的第 2 行 × K 的第 0 行 → scores[2, 0]。",
+        "end": 13.792
+      },
+      {
+        "start": 13.792,
+        "text": "Q 的第 2 行 × K 的第 1 行 → scores[2, 1]。",
+        "end": 15.417
+      },
+      {
+        "start": 15.417,
+        "text": "Q 的第 2 行 × K 的第 2 行 → scores[2, 2]。",
+        "end": 17.042
+      },
+      {
+        "start": 17.042,
+        "text": "行是查询位置，列是被读取的位置；此时还没有遮住未来。",
+        "end": 20.875
+      }
+    ],
+    "sourceHash": "49eea0ffa214d77ad78718e28ba288d2362982df8f643002db063ca263ed03e6"
+  },
+  {
+    "id": "attention-mask",
+    "chapter": "attention",
+    "scene": "AttentionMaskScene",
+    "title": "屏蔽未来位置",
+    "function": "apply_causal_mask",
+    "summary": "按行保留可见分数，把未来位置替换为负无穷。",
+    "duration": 18.583333,
+    "width": 1280,
+    "height": 720,
+    "src": "/animations/attention-mask.mp4",
+    "poster": "/animations/attention-mask.jpg",
+    "captions": "/animations/attention-mask.vtt",
+    "cues": [
+      {
+        "start": 0.0,
+        "text": "分数矩阵有三个查询位置；第 i 行只能读取第 0 到 i 列。",
+        "end": 2.417
+      },
+      {
+        "start": 2.417,
+        "text": "位置 0：保留列 0～0，把右侧所有未来分数设为 −∞。",
+        "end": 5.417
+      },
+      {
+        "start": 5.417,
+        "text": "位置 1：保留列 0～1，把右侧所有未来分数设为 −∞。",
+        "end": 8.417
+      },
+      {
+        "start": 8.417,
+        "text": "位置 2：三个位置都已出现，所以这一行全部保留。",
+        "end": 11.417
+      },
+      {
+        "start": 11.417,
+        "text": "屏蔽的是不含对角线的上三角；矩阵形状和可见分数不变。",
+        "end": 14.75
+      },
+      {
+        "start": 14.75,
+        "text": "不能替换成 0：exp(0) = 1，仍会在 softmax 中获得权重。",
+        "end": 18.583
+      }
+    ],
+    "sourceHash": "49eea0ffa214d77ad78718e28ba288d2362982df8f643002db063ca263ed03e6"
+  },
+  {
+    "id": "attention-softmax",
+    "chapter": "attention",
+    "scene": "AttentionSoftmaxScene",
+    "title": "逐行归一化",
+    "function": "attention_weights",
+    "summary": "分数取指数、计算分母、逐项相除，得到读取权重。",
+    "duration": 15.333333,
+    "width": 1280,
+    "height": 720,
+    "src": "/animations/attention-softmax.mp4",
+    "poster": "/animations/attention-softmax.jpg",
+    "captions": "/animations/attention-softmax.vtt",
+    "cues": [
+      {
+        "start": 0.0,
+        "text": "先看位置 1：遮罩后的分数是 [0, 0.707, −∞]。",
+        "end": 2.417
+      },
+      {
+        "start": 2.417,
+        "text": "每项取指数，得到 [1, 2.028, 0]；未来位置的贡献变成 0。",
+        "end": 5.75
+      },
+      {
+        "start": 5.75,
+        "text": "只把同一行的指数相加，作为这一行自己的分母。",
+        "end": 8.167
+      },
+      {
+        "start": 8.167,
+        "text": "逐项除以 3.028，得到 [0.330, 0.670, 0]，这一行和为 1。",
+        "end": 11.5
+      },
+      {
+        "start": 11.5,
+        "text": "其他行各自归一化，不跨行混合；未来位置的权重始终为 0。",
+        "end": 15.333
+      }
+    ],
+    "sourceHash": "49eea0ffa214d77ad78718e28ba288d2362982df8f643002db063ca263ed03e6"
+  },
+  {
+    "id": "attention-values",
+    "chapter": "attention",
+    "scene": "AttentionValuesScene",
+    "title": "加权汇总 V",
+    "function": "attend_values",
+    "summary": "每个权重乘对应的 V 向量，按分量相加得到完整输出。",
+    "duration": 17.958333,
+    "width": 1280,
+    "height": 720,
+    "src": "/animations/attention-values.mp4",
+    "poster": "/animations/attention-values.jpg",
+    "captions": "/animations/attention-values.vtt",
+    "cues": [
+      {
+        "start": 0.0,
+        "text": "位置 1 的三个权重，分别乘 V 的三行向量。",
+        "end": 2.417
+      },
+      {
+        "start": 2.417,
+        "text": "0.330 × [1, 0] → [0.330, 0]。",
+        "end": 5.042
+      },
+      {
+        "start": 5.042,
+        "text": "0.670 × [0, 1] → [0, 0.670]。",
+        "end": 7.667
+      },
+      {
+        "start": 7.667,
+        "text": "0 × [2, 2] → [0, 0]。",
+        "end": 10.292
+      },
+      {
+        "start": 10.292,
+        "text": "沿着向量分量相加：位置 1 的输出是 [0.330, 0.670]。",
+        "end": 14.125
+      },
+      {
+        "start": 14.125,
+        "text": "每个位置都这样汇总，完整输出为 [T, D] = [3, 2]。",
+        "end": 17.958
+      }
+    ],
+    "sourceHash": "49eea0ffa214d77ad78718e28ba288d2362982df8f643002db063ca263ed03e6"
+  },
+  {
+    "id": "attention-causality",
+    "chapter": "attention",
+    "scene": "AttentionCausalityScene",
+    "title": "验证因果不变性",
+    "function": "因果性自检",
+    "summary": "修改未来 V，直接比较前面位置与当前位置的输出变化。",
+    "duration": 16.25,
+    "width": 1280,
+    "height": 720,
+    "src": "/animations/attention-causality.mp4",
+    "poster": "/animations/attention-causality.jpg",
+    "captions": "/animations/attention-causality.vtt",
+    "cues": [
+      {
+        "start": 0.0,
+        "text": "先保留原始 V 与完整输出，对照每个位置的变化。",
+        "end": 2.417
+      },
+      {
+        "start": 2.417,
+        "text": "只把位置 2 的 V 从 [2, 2] 改成 [100, 100]。",
+        "end": 5.75
+      },
+      {
+        "start": 5.75,
+        "text": "Q、K 没变，权重也不变；重新汇总后，前两行输出完全相同。",
+        "end": 9.083
+      },
+      {
+        "start": 9.083,
+        "text": "位置 2 可以读取自己，所以最后一行变为约 [50.597, 50.597]。",
+        "end": 12.417
+      },
+      {
+        "start": 12.417,
+        "text": "因果遮罩阻断了未来 V 到前面位置的读取路径。",
+        "end": 16.25
+      }
+    ],
+    "sourceHash": "49eea0ffa214d77ad78718e28ba288d2362982df8f643002db063ca263ed03e6"
+  }
+]

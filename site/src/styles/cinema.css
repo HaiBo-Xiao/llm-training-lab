@@ -1,0 +1,49 @@
+lesson-cinema { display: block; margin-block: 25px 30px; min-width: 0; }
+.cinema-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; color: var(--accent); font-size: 13px; }
+.cinema-heading > span:last-child { color: #68766b; font-size: 12px; }
+.cinema-count { color: #68766b; margin-left: 10px; font-size: 12px; }
+lesson-cinema video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; background: #101d26; border-radius: 6px; }
+.prose .cinema-current h3 { margin: 17px 0 4px; font-size: 18px; }
+.cinema-current p { color: #657064; font-size: 13px; line-height: 1.8; }
+.cinema-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 17px; color: #5e6e5e; font-size: 12px; }
+.cinema-paging { display: flex; gap: 8px; margin-right: auto; }
+.cinema-paging button { padding: 7px 11px; background: var(--paper); border: 1px solid var(--line); border-radius: 4px; }
+.cinema-paging button:hover:enabled { background: var(--accent-soft); }
+.cinema-speed, .cinema-autoplay { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+.cinema-speed select { color: inherit; border: 1px solid var(--line); padding: 5px; background: var(--paper); border-radius: 4px; }
+.cinema-autoplay input { width: 15px; height: 15px; accent-color: var(--accent); }
+.cinema-lessons { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-block: 20px; }
+.cinema-lessons button { display: grid; grid-template-columns: 22px minmax(0, 1fr) 28px; align-items: center; gap: 8px; text-align: left; padding: 12px 10px; color: #56664f; border: 1px solid var(--line); background: var(--paper); border-radius: 4px; }
+.cinema-lessons button[aria-pressed="true"] { border-color: #839e7b; background: var(--accent-soft); color: var(--accent-dark); }
+.cinema-number, .cinema-duration { font-family: var(--mono); font-size: 11px; color: #778473; }
+.cinema-lesson-title { font-size: 13px; line-height: 1.5; }
+.cinema-lesson-title small { display: block; margin-top: 4px; font-family: var(--mono); font-size: 10px; color: #778473; overflow-wrap: anywhere; }
+.prose details.cinema-transcript { margin: 16px 0; background: transparent; }
+.prose details.cinema-transcript > div { padding: 0 14px 10px; }
+.cinema-transcript-hint { color: #657064; }
+.prose .cinema-transcript ol { list-style: none; padding: 0; margin: 0; }
+.prose .cinema-transcript li { margin: 0; padding: 0; }
+.cinema-transcript button { display: flex; align-items: baseline; gap: 12px; width: 100%; border: 0; border-top: 1px solid var(--line); background: transparent; padding: 10px 3px; color: #4e624a; text-align: left; font-size: 12px; line-height: 1.7; }
+.cinema-transcript button:hover { background: var(--accent-soft); }
+.cinema-transcript time { flex-shrink: 0; font-family: var(--mono); color: #75866c; font-size: 11px; }
+.cinema-links { display: flex; gap: 20px; flex-wrap: wrap; font-size: 12px; }
+.cinema-error { color: #914a35; font-size: 13px; margin-top: 10px; }
+.prose details.chapter-reading, .prose details.lab-disclosure { background: transparent; }
+.prose details.chapter-reading > summary, .prose details.lab-disclosure > summary { font-size: 14px; }
+.prose details.chapter-reading > div { color: var(--text); font-size: 14px; padding: 0 20px 20px; }
+.prose details.lab-disclosure > div { padding: 0 12px 16px; }
+.prose details.chapter-reading h3 { font-size: 19px; }
+.prose details.chapter-reading p { margin-block: 16px; }
+@media (max-width: 700px) {
+  .cinema-lessons { grid-template-columns: 1fr; }
+  .cinema-heading { font-size: 12px; }
+  .cinema-heading > span:last-child, .cinema-count { font-size: 11px; }
+  .cinema-count { margin-left: 6px; }
+  .cinema-paging { flex-basis: 100%; }
+  .cinema-paging button { flex: 1; min-height: 42px; }
+  .cinema-speed select { min-height: 40px; }
+  .cinema-autoplay { min-height: 40px; }
+  .cinema-controls { gap: 8px 18px; }
+  .prose details.chapter-reading > div { padding-inline: 12px; }
+  .prose details.lab-disclosure > div { padding-inline: 6px; }
+}
